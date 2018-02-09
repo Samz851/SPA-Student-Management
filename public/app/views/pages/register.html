@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="page-header">
+        <h3>Register a new account</h3>
+    </div>
+    <form ng-submit="register.regUser(regData);">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" placeholder="Enter Username" ng-model="register.regData.username">
+        </div>
+        <div class="form-group">
+            <label for="useremail">Email</label>
+            <input type="text" class="form-control" id="useremail" placeholder="Enter Email" ng-model="register.regData.email">
+        </div>
+        <div class="form-group">
+            <label for="userpassword">Password</label>
+            <input type="password" class="form-control" id="userpassword" placeholder="Enter Password" ng-model="register.regData.password"> 
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div class="jumbotron text-center" ng-show="register.loading">
+        <span class="glyphicon glypicon-repeat spinner"></span>
+        <p>loading...</p>
+
+        </div>
+        <div class="row show-hide-message" ng-show="register.successMsg">
+            <div class="alert alert-success">{{register.successMsg}}</div>
+        </div>
+        <div class="row show-hide-message" ng-show="register.errorMsg">
+            <div class="alert alert-danger">{{register.errorMsg}}</div>
+        </div>
+    </div>
+</div>
