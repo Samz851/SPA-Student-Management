@@ -25,4 +25,9 @@ const bcrypt = require('bcrypt-nodejs');
       });
   })
 
+  UserSchema.methods.passwordMatch = function(givenPassword){
+      
+      return bcrypt.compareSync(givenPassword, this.password);
+  }
+
   module.exports = mongoose.model('User', UserSchema);

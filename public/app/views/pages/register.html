@@ -17,16 +17,18 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <div class="jumbotron text-center" ng-show="register.loading">
-        <span class="glyphicon glypicon-repeat spinner"></span>
-        <p>loading...</p>
+    <div class="feedback">
+        <div class="jumbotron text-center" ng-show="register.loading">
+            <span class="glyphicon glypicon-repeat spinner"></span>
+            <p>loading...</p>
 
-        </div>
-        <div class="row show-hide-message" ng-show="register.successMsg">
-            <div class="alert alert-success">{{register.successMsg}}</div>
-        </div>
-        <div class="row show-hide-message" ng-show="register.errorMsg">
-            <div class="alert alert-danger">{{register.errorMsg}}</div>
+            </div>
+            <div class="row show-hide-message" ng-show="register.successMsg">
+                <div class="alert alert-success">{{register.successMsg}}</div>
+            </div>
+            <div class="row show-hide-message" ng-show="register.errorMsg">
+                <div class="alert alert-danger">{{register.errorMsg}}</div>
+            </div>
         </div>
     </div>
 </div>
