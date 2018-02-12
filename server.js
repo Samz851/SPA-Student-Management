@@ -6,6 +6,8 @@ var router = express.Router();
 var routes = require('./app/routes/api.js')(router);
 var bodyParser = require('body-parser');
 var path = require('path');
+var passport = require('passport');
+var socialLogin = require('./app/passport/passport.js')(app, passport);
 
 //middleware
 app.use(logger('dev'));

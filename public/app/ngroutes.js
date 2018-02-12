@@ -25,6 +25,14 @@ angular.module('usermgmtRoutes',['ngRoute'])
         .when('/profile', {
             templateUrl: 'app/views/pages/profile.html'
         })
+        .when('/privacy', {
+            templateUrl: 'app/views/pages/privacy.html'
+        })
+        .when('/facebook/:token',{
+            templateUrl: 'app/views/pages/facebook.html',
+            controller: 'fbCtrl',
+            controllerAs: 'fb'
+        })
         .otherwise({redirectTo: '/'});
 
         $locationProvider.html5Mode({

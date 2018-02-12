@@ -19,4 +19,10 @@ angular.module('userController',['userService'])
            }
        });
     };
-});
+})
+
+.controller('fbCtrl', function($routeParams, Auth, $location){
+    console.log($routeParams);
+    Auth.facebook($routeParams.token);
+    $location.path('/');
+})
