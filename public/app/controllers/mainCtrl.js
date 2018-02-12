@@ -1,5 +1,5 @@
 angular.module('maincontroller',['authService'])
-.controller('mainCtrl', function(Auth, $timeout, $location, $rootScope){
+.controller('mainCtrl', function(Auth, $timeout, $location, $rootScope, $window){
     
     var app= this;
     app.loadMe = false;
@@ -16,8 +16,12 @@ angular.module('maincontroller',['authService'])
             app.logUsername = null;
             app.loadMe = true;
         }
+        if($location.hash() == '_=_') $location.hash(null);
     })
-    
+    this.fb = function(){
+        $window.location = $window.location.protocol + '//' + $window.location.host + '/auth/facebook';
+    }
+
     this.loginUser = function(loginData){
         app.loading = true;
         app.errorMsg = false;
@@ -43,9 +47,8 @@ angular.module('maincontroller',['authService'])
 
     this.logout = function(){
         Auth.logout();
-        $location.path('/logout');
         $timeout(function(){
-            $location.path('/')
-        },5000)
+            $location.path('/');
+        },2000)
     }
 })

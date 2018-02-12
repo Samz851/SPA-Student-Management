@@ -12,7 +12,7 @@
             <input type="password" class="form-control" id="userpassword" placeholder="Enter Password" ng-model="main.loginData.password"> 
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>&nbsp;
-        <a href="/auth/facebook" target="_blank"><button type="button" class="btn btn-success">FACEBOOK LOGIN</button></a>
+        <button type="button" class="btn btn-success" ng-click="main.fb()">FACEBOOK LOGIN</button>
     </form>
     <div class="feedback">
         <div class="jumbotron text-center" ng-show="main.loading">
@@ -25,6 +25,9 @@
             </div>
             <div class="row show-hide-message" ng-show="main.errorMsg">
                 <div class="alert alert-danger">{{main.errorMsg}}</div>
+            </div>
+            <div class="row show-hide-message" ng-show="fb.errorMsg">
+                <div class="alert alert-danger">{{fb.errorMsg}}</div>
             </div>
         </div>
     </div>

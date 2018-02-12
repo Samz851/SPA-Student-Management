@@ -1,4 +1,4 @@
-angular.module('usermgmtRoutes',['ngRoute'])
+var app = angular.module('usermgmtRoutes',['ngRoute'])
 
 .config(function($routeProvider, $locationProvider){
     $routeProvider
@@ -14,16 +14,20 @@ angular.module('usermgmtRoutes',['ngRoute'])
         .when('/register', {
             templateUrl: 'app/views/pages/register.html',
             controller: 'regCtrl',
-            controllerAs: 'register'
+            controllerAs: 'register',
+            loggedIn: false
         })
         .when('/login', {
-            templateUrl: 'app/views/pages/login.html'
+            templateUrl: 'app/views/pages/login.html',
+            loggedIn: false
         })
         .when('/logout',{
-            templateUrl: 'app/views/pages/logout.html'
+            templateUrl: 'app/views/pages/logout.html',
+            loggedIn: true
         })
         .when('/profile', {
-            templateUrl: 'app/views/pages/profile.html'
+            templateUrl: 'app/views/pages/profile.html',
+            loggedIn: true
         })
         .when('/privacy', {
             templateUrl: 'app/views/pages/privacy.html'
@@ -31,7 +35,14 @@ angular.module('usermgmtRoutes',['ngRoute'])
         .when('/facebook/:token',{
             templateUrl: 'app/views/pages/facebook.html',
             controller: 'fbCtrl',
-            controllerAs: 'fb'
+            controllerAs: 'fb',
+            loggedIn: false
+        })
+        .when('/facebookerror',{
+            templateUrl: 'app/views/pages/login.html',
+            controller: 'fbCtrl',
+            controllerAs: 'fb',
+            loggedIn: false
         })
         .otherwise({redirectTo: '/'});
 
@@ -40,3 +51,23 @@ angular.module('usermgmtRoutes',['ngRoute'])
             requireBase: false
         });
 });
+
+app.run(['$rootScope', 'Auth', '$location', function($rootScope, Auth, $location){
+    $rootScope.$on('$routeChangeStart', function(event, next, current,){
+        if(next.$$route.loggedIn == true){
+            if(!Auth.isLoggedIn()) {
+                event.preventDefault();
+                $location.path('/');
+            }
+
+        } else if(next.$$route.loggedIn == false){
+            if(Auth.isLoggedIn()){
+                event.preventDefault();
+                $location.path('/profile');
+            }
+
+        } else (
+            console.log('property undefined')
+        )
+    })
+}])
