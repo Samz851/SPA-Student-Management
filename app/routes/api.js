@@ -10,14 +10,35 @@ module.exports = function(router){
         user.username = req.body.username;
         user.password = req.body.password;
         user.email = req.body.email;
+        user.firstname = req.body.firstname;
+        user.lastname = req.body.lastname;
         var cond = req.body.username == null || req.body.username == ' ' || req.body.password == null || req.body.password == ' ' || req.body.email == null || req.body.email == ' ';
         if(cond){
             res.json({ success: false, message: 'Please provide all required fields'});
         } else {
             user.save(function(err){
+                // Try switch
+                // switch (key in err) {
+                //     case key == 'email':
+                //         res.json({success: false, message: err.email.message});
+                //         break;
+                //     case key == 'password':
+                //         res.json({success: false, message: err.password.message});
+                // }
+
+
             if(err){
-                res.json({success: false, message: 'Username or Email Already exist'});
-                console.log(err);
+                if(err.errors.hasOwnProperty('email')){
+                    res.json({success: false, message: err.errors.email.message}); //We can select specific parts of the Error Object to display -- remember err/error is an object like any other.
+                } else if(err.errors.hasOwnProperty('password')){
+                    res.json({success: false, message: err.errors.password.message});
+                } else if(err.errors.hasOwnProperty('username')){
+                    res.json({success: false, message: err.errors.username.message});
+                }
+                else {
+                    res.json({success: false, message: err});
+                }
+
             }else{
                     res.json({success: true, message: 'User Record Created Successfully'})
                 }
