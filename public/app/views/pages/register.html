@@ -2,25 +2,49 @@
     <div class="page-header">
         <h3>Register a new account</h3>
     </div>
-    <form ng-submit="register.regUser(regData);">
+    <form name="regForm" ng-submit="register.regUser(regData, regForm.$valid);" novalidate>
         <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="fname" placeholder="First Name" ng-model="register.regData.firstname">
-                <input type="text" class="form-control" id="lname" placeholder="Last Name" ng-model="register.regData.lastname">
+                <label for="name">Name </label><span class="glyphicon glyphicon-ok" ng-show="regForm.fname.$valid && !regForm.fname.$pristine && regForm.lname.$valid && !regForm.lname.$pristine"></span><span class="glyphicon glyphicon-remove" ng-show="(!regForm.fname.$valid && !regForm.fname.$pristine) || (!regForm.lname.$valid && !regForm.lname.$pristine)"></span>
+                <input type="text" class="form-control" name="fname" placeholder="First Name" ng-model="register.regData.firstname" required ng-pattern="/^[a-zA-Z]+$/">
+                <input type="text" class="form-control" name="lname" placeholder="Last Name" ng-model="register.regData.lastname" required ng-pattern="/^[a-zA-Z]+$/">
+                <div ng-messages="regForm.fname.$error">
+                    <p ng-message="pattern">Name must contain only Alphabetical Letters</p>
+                    <p ng-message="required" ng-if="!regForm.fname.$pristine">Name Field is Required!</p>
+                </div>
+                <div ng-messages="regForm.lname.$error">
+                    <p ng-message="pattern">Name must contain only Alphabetical Letters</p>
+                    <p ng-message= "required" ng-if="!regForm.lname.$pristine">Name Field is Required</p>
+                </div>
         </div>
         <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Enter Username" ng-model="register.regData.username">
+            <label for="username" class="col-form-label">Username</label><span class="glyphicon glyphicon-ok" ng-show="regForm.username.$valid && !regForm.username.$pristine"></span><span class="glyphicon glyphicon-remove" ng-show="!regForm.username.$valid && !regForm.username.$pristine"></span>
+            <input type="text" class="form-control" name="username" placeholder="Enter Username" ng-model="register.regData.username" required ng-minlength="3" ng-maxlength="15">
+            <div ng-messages="regForm.username.$error">
+                <p ng-message="required" ng-if="!regForm.username.$pristine">Username is Required</p>
+                <p ng-message="minlength">Username is too short</p>
+                <p ng-message="maxlength">Username is too long</p>
+            </div>
         </div>
         <div class="form-group">
-            <label for="useremail">Email</label>
-            <input type="text" class="form-control" id="useremail" placeholder="Enter Email" ng-model="register.regData.email">
+            <label for="useremail">Email</label><span class="glyphicon glyphicon-ok" ng-show="regForm.useremail.$valid && !regForm.useremail.$pristine"></span><span class="glyphicon glyphicon-remove" ng-show="!regForm.useremail.$valid && !regForm.useremail.$pristine"></span>
+            <input type="email" class="form-control" name="useremail" placeholder="Enter Email" ng-model="register.regData.email" ng-pattern="/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i" required>
+            <div ng-messages="regForm.useremail.$error">
+                <p ng-message="required" ng-if="!regForm.useremail.$pristine">Email is Required</p>
+                <p ng-message="pattern">Email should match example@example.com</p>
+            </div>
         </div>
         <div class="form-group">
-            <label for="userpassword">Password</label>
-            <input type="password" class="form-control" id="userpassword" placeholder="Enter Password" ng-model="register.regData.password"> 
+            <label for="userpassword">Password</label><span class="glyphicon glyphicon-ok" ng-show="regForm.userpassword.$valid && !regForm.userpassword.$pristine"></span><span class="glyphicon glyphicon-remove" ng-show="!regForm.userpassword.$valid && !regForm.userpassword.$pristine"></span>
+            <input type="password" class="form-control" name="userpassword" placeholder="Enter Password" ng-model="register.regData.password" required ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{2,}$/" ng-minlength="6" ng-maxlength="24">
+            <input type="password" class="form-control" id="userepassword" placeholder="Retype your Password" ng-model="register.regData.repassword" required>
+            <div ng-messages="regForm.userpassword.$error">
+                <p ng-message="required" ng-if="!regForm.userpassword.$pristine">Password is Required</p>
+                <p ng-message="pattern">Password should contain atleast one letter, one number, and one symbol </p>
+                <p ng-message="minlength">Password should be atleast 6 characters long</p>
+                <p ng-message="maxlength">Password Should be no longer than 24 characters</p>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary" ng-disabled="regForm.$invalid">Submit</button>
     </form>
     <div class="feedback">
         <div class="jumbotron text-center" ng-show="register.loading">

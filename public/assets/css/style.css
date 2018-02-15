@@ -1,3 +1,5 @@
+@import url('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css');
+
 body {
     background-color: aliceblue;
 }
@@ -37,4 +39,24 @@ header.navbar{
 @-moz-keyframes spin {
     from {-moz-transform: rotate(0deg);}
     to {-moz-transform: rotate(360deg);}
+}
+
+
+input:focus.ng-dirty.ng-invalid {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(233, 83, 78, 0.6);
+    border-color: rgb(233, 83, 78);
+}
+input:focus.ng-dirty.ng-valid {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(126, 239, 104, 0.6);
+    border-color: rgb(126, 239, 104);
+}
+.glyphicon {
+    float:right;
+    vertical-align: -webkit-baseline-middle;
+}
+.glyphicon.glyphicon-ok{
+    color:rgb(126,239,104);
+}
+.glyphicon.glyphicon-remove{
+    color:rgb(233,83,78);
 }

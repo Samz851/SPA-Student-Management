@@ -1,24 +1,34 @@
 angular.module('userController',['userService'])
-.controller('regCtrl', function($http, $location, $timeout, userFactory) {
+
+//Controllers
+
+.controller('regCtrl', function($http, $location, $timeout, userFactory, $scope) {
     var app = this;
-    this.regUser = function(regData) {
+    this.regUser = function(regData, valid) {
         app.loading = true;
         app.errorMsg=false;
-        User.create(app.regData).then(function(data){
-           console.log(data);
-           if(data.data.success){
-               app.loading = false;
-               app.successMsg = data.data.message + "...Redirecting Please Hold!";
-               //redirect to homepage
-               $timeout(function(){
-                    $location.path('/');
-               }, 2000);
-           }else{
-               app.loading = false;
-               app.errorMsg = data.data.message;
-           }
-       });
-    };
+        if(!valid){
+            app.loading = false;
+            app.errorMsg = "Please make sure the form is complete and all fields are valid before submitting...";
+        }else {
+            User.create(app.regData).then(function(data){
+                console.log(data);
+                if(data.data.success){
+                    app.loading = false;
+                    app.successMsg = data.data.message + "...Redirecting Please Hold!";
+                    //redirect to homepage
+                    $timeout(function(){
+                         $location.path('/');
+                    }, 2000);
+                }else{
+                    app.loading = false;
+                    app.errorMsg = data.data.message;}
+        });
+        }
+};
+$scope.compare = function (repassword) {
+    $scope.isconfirm = $scope.password == repassword ? true : false;
+       }
 })
 
 .controller('fbCtrl', function($routeParams, Auth, $location, $window, $timeout){

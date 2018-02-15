@@ -3,6 +3,15 @@ var Schema = mongoose.Schema;
 var validate = require('mongoose-validator');
 const bcrypt = require('bcrypt-nodejs');
 
+//mongoDB Validators - Backend
+var nameValidator = [
+    validate({
+        validator: 'matches',
+        arguments: /^[a-zA-Z]+$/,
+        message: 'Name should only contain letters',
+    })
+]
+
 var usernameValidator = [
     validate({
         validator: 'isLength',
@@ -25,13 +34,13 @@ var emailValidator = [
       validator: 'isEmail',
       passIfEmpty: true,
       message: 'This is not a valid email',
-    }),
-  ]
+    })
+]
 
   var passwordValidator = [
       validate({
           validator: 'isLength',
-          arguments: [6, 12],
+          arguments: [6, 24],
           message: 'Password must be between {ARGS[0]} and {ARGS[1]} characters long',
       }),
       validate({
@@ -39,14 +48,15 @@ var emailValidator = [
           arguments:/^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[\d])(?=.*?[\W]).{1,}$/,
           message: 'Password must contain atleast one letter, one number, and one symbol'
       })
-  ]
+]
 
     var UserSchema = new Schema({
         firstname: {type: String,
-            required: true}, 
+            required: true,
+            validate: nameValidator}, 
         lastname: {type: String,
-            required: true
-        },
+            required: true,
+            validate: nameValidator},
         username: {type: String,
             lowercase: true,
             required: true,

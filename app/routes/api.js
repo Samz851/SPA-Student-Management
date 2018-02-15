@@ -17,35 +17,34 @@ module.exports = function(router){
             res.json({ success: false, message: 'Please provide all required fields'});
         } else {
             user.save(function(err){
-                // Try switch
-                // switch (key in err) {
-                //     case key == 'email':
-                //         res.json({success: false, message: err.email.message});
-                //         break;
-                //     case key == 'password':
-                //         res.json({success: false, message: err.password.message});
-                // }
-
-
-            if(err){
-                if(err.errors.hasOwnProperty('email')){
-                    res.json({success: false, message: err.errors.email.message}); //We can select specific parts of the Error Object to display -- remember err/error is an object like any other.
-                } else if(err.errors.hasOwnProperty('password')){
-                    res.json({success: false, message: err.errors.password.message});
-                } else if(err.errors.hasOwnProperty('username')){
-                    res.json({success: false, message: err.errors.username.message});
-                }
-                else {
-                    res.json({success: false, message: err});
-                }
-
-            }else{
+                if(err) {
+                    if(err.errors != null){
+                        if(err.errors.hasOwnProperty('email')){
+                            res.json({success: false, message: err.errors.email.message}); //We can select specific parts of the Error Object to display -- remember err/error is an object like any other.
+                        } else if(err.errors.hasOwnProperty('password')){
+                            res.json({success: false, message: err.errors.password.message});
+                        } else if(err.errors.hasOwnProperty('username')){
+                            res.json({success: false, message: err.errors.username.message});
+                        } else if(err.errors.hasOwnProperty('firstname')){
+                            res.json({success: false, message: err.errors.firstname.message});
+                        } else if(err.errors.hasOwnProperty('lastname')){
+                            res.json({success: false, message: err.errors.lastname.message});
+                        }
+                    } else if(err.code == 11000) {
+                        var message = err.errmsg.split(' ');
+                        var msgString = message.toString();
+                        if(msgString.indexOf('username') > -1){
+                            res.json({success: false, message: 'Username Already Exist '});
+                        } else if (msgString.indexOf('email' > -1)){
+                            res.json({success: false, message: 'Email Already Exist '});
+                        }
+                    } else {
+                        res.json({success:false, message: err})};
+                } else {
                     res.json({success: true, message: 'User Record Created Successfully'})
                 }
             });
-
         }
-        
     });
     // User Login API Route
     router.post('/authenticate', function(req, res){
