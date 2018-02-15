@@ -26,10 +26,47 @@ angular.module('userController',['userService'])
         });
         }
 };
-$scope.compare = function (repassword) {
-    $scope.isconfirm = $scope.password == repassword ? true : false;
-       }
+    this.checkusername = function(regData){
+        User.checkusername(app.regData).then(function(data){
+            if(data.data.success){
+                app.loading = false;
+                app.successMsg = data.data.message;
+            } else {
+                app.loading = false;
+                app.errorMsg = data.data.message;
+            }
+        })
+        
+    };
+    this.checkuseremail = function(regData){
+        if(data.data.success){
+            app.loading = false;
+            app.successMsg = data.data.message;
+        } else {
+            app.loading = false;
+            app.errorMsg = data.data.message;
+        }
+    }
+
+// $scope.compare = function (repassword) {
+//     $scope.isconfirm = $scope.password == repassword ? true : false;
+//        }
 })
+
+.directive('matchPw', [function () {
+    return {
+      require: 'ngModel',
+      link: function (scope, elem, attrs, ctrl) {
+        var firstPassword = regForm.userpassword;
+        $(elem).add(firstPassword).on('keyup', function () {
+          scope.$apply(function () {
+            var v = elem.val()===$(firstPassword).val();
+            ctrl.$setValidity('pwmatch', v);
+          });
+        });
+      }
+    }
+  }])
 
 .controller('fbCtrl', function($routeParams, Auth, $location, $window, $timeout){
     var app = this;

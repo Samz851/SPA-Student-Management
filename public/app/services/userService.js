@@ -5,5 +5,11 @@ angular.module('userService',[])
     User.create = function(regData){
         return $http.post('/api/users', regData);
     }
+    User.checkusername = function(regData){
+        return $http.post('/api/checkusername', regData);
+    }
+    User.checkuseremail = function(regData){
+        return $http.post('/api/checkuseremail', regData);
+    }
     return User;
 })

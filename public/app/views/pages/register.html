@@ -18,7 +18,7 @@
         </div>
         <div class="form-group">
             <label for="username" class="col-form-label">Username</label><span class="glyphicon glyphicon-ok" ng-show="regForm.username.$valid && !regForm.username.$pristine"></span><span class="glyphicon glyphicon-remove" ng-show="!regForm.username.$valid && !regForm.username.$pristine"></span>
-            <input type="text" class="form-control" name="username" placeholder="Enter Username" ng-model="register.regData.username" required ng-minlength="3" ng-maxlength="15">
+            <input type="text" class="form-control" name="username" placeholder="Enter Username" ng-model="register.regData.username" required ng-minlength="3" ng-maxlength="15" ng-blur="register.checkusername(regData)">
             <div ng-messages="regForm.username.$error">
                 <p ng-message="required" ng-if="!regForm.username.$pristine">Username is Required</p>
                 <p ng-message="minlength">Username is too short</p>
@@ -34,9 +34,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="userpassword">Password</label><span class="glyphicon glyphicon-ok" ng-show="regForm.userpassword.$valid && !regForm.userpassword.$pristine"></span><span class="glyphicon glyphicon-remove" ng-show="!regForm.userpassword.$valid && !regForm.userpassword.$pristine"></span>
+            <label for="userpassword">Password</label><span class="glyphicon glyphicon-ok" ng-show="((regForm.userpassword.$valid && !regForm.userpassword.$pristine)&&(regForm.userrepassword.$valid && !regForm.userrepassword.$pristine))"></span><span class="glyphicon glyphicon-remove" ng-show="((!regForm.userpassword.$valid && !regForm.userpassword.$pristine)||(!regForm.userrepassword.$valid && !regForm.userrepassword.$pristine))"></span>
             <input type="password" class="form-control" name="userpassword" placeholder="Enter Password" ng-model="register.regData.password" required ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{2,}$/" ng-minlength="6" ng-maxlength="24">
-            <input type="password" class="form-control" id="userepassword" placeholder="Retype your Password" ng-model="register.regData.repassword" required>
+            <input type="password" class="form-control" name="userrepassword" placeholder="Retype your Password" ng-model="register.regData.repassword" required match-pw>
             <div ng-messages="regForm.userpassword.$error">
                 <p ng-message="required" ng-if="!regForm.userpassword.$pristine">Password is Required</p>
                 <p ng-message="pattern">Password should contain atleast one letter, one number, and one symbol </p>

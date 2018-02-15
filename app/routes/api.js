@@ -46,6 +46,26 @@ module.exports = function(router){
             });
         }
     });
+
+    //Username & Email Check API
+    router.post('/checkusername', function(req,res){
+        User.findOne({username: req.body.username}).select('username').exec(function(err, user){
+            if(user){
+                res.json({success: false, message: 'Username Already Taken'});
+            } else {
+                res.json({success: true, message: 'Username Available'});
+            }
+        })
+    })
+    router.post('/checkuseremail', function(req,res){
+        User.findOne({username: req.body.useremail}).select('email').exec(function(err, user){
+            if(user){
+                res.json({success: fail, message: 'Username Already Taken'});
+            } else {
+                res.json({success: true, message: 'Username Available'});
+            }
+        })
+    })
     // User Login API Route
     router.post('/authenticate', function(req, res){
         var cond = req.body.username == null || req.body.username == ' ' || req.body.password == null || req.body.password == ' ';
