@@ -1,6 +1,7 @@
 var User = require('../models/user.js');
 var jwt = require('jsonwebtoken');
-var secret = 'Samz851';
+var secret = 'Samz851'; 
+var nodemailer = require("nodemailer");
 
 module.exports = function(router){
 
@@ -47,25 +48,114 @@ module.exports = function(router){
         }
     });
 
+    // Email Activation APIs
+    router.post('/sendactivation', function(req, res){
+        console.log('the request raw is as follows: \n' +req.body.email+'\n The end of the header');
+        var email= req.body.email;
+        var emailtoken = jwt.sign({
+            username: req.body.username,
+            email: req.body.email,
+          }, secret, { expiresIn: '72h' });
+        // find user
+        User.findOne({email: req.body.email}).select('temptoken').exec(function(err, user){
+            if(err){
+                console.log(err);
+            }else{
+                user.temptoken = emailtoken;
+                user.save((err, user) => {
+                    if (err) {
+                        console.log('could not save token');
+                    }else{
+                        console.log('token saved in database');
+                    }
+                });
+            }
+        });
+        verifyurl="http://127.0.0.1:3000/api/verifyemail";
+        link=verifyurl+'?id='+emailtoken;
+        mailOptions={
+            to : email,
+            subject : "Please confirm your Email account",
+            html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>" 
+        }
+        console.log(mailOptions);
+        let mailTransporter = nodemailer.createTransport({
+            service: 'Mailgun',
+            auth: {
+                api_key: 'key-be742a5d437c8958e763f1a361003941',
+                domain: 'sandboxd3612106dbc141b7a5134f0fddce769a.mailgun.org',
+                user: 'postmaster@sandboxd3612106dbc141b7a5134f0fddce769a.mailgun.org',
+                pass: '12345',
+                secure: false,
+            }
+        });
+        mailTransporter.sendMail(mailOptions, function(err, res){
+            if(error){
+                console.log(error);
+                res.end("error");
+            }else{
+                console.log("Message sent: " + res);
+                res.end("sent");
+            }
+        });
+    })
+    router.get('/verifyemail',function(req,res){
+        console.log(req.headers);
+        verifytoken = req.query.id;
+        tokenemail=''
+        jwt.verify(verifytoken, secret, function(err, decoded){
+            if(err){
+                console.log('could not decode token');
+            } else{
+                tokenemail = decoded.email;
+            }
+        });
+        User.findOne({email: tokenemail}).select('isverified temptoken').exec(function(err, user){
+            if(err){
+                console.log('could not find record');
+            }else {
+                if(req.query.id==user.temptoken){
+                    user.isverified = true;
+                    user.save(function(err, user){
+                        res.json({message: 'email tokens match and account is verified'})
+                    })
+                }else{
+                    res.json({message:'tokens do not match'});
+                }
+
+            }
+        })
+    })
+
     //Username & Email Check API
     router.post('/checkusername', function(req,res){
-        User.findOne({username: req.body.username}).select('username').exec(function(err, user){
-            if(user){
-                res.json({success: false, message: 'Username Already Taken'});
-            } else {
-                res.json({success: true, message: 'Username Available'});
-            }
-        })
-    })
-    router.post('/checkuseremail', function(req,res){
-        User.findOne({username: req.body.useremail}).select('email').exec(function(err, user){
-            if(user){
-                res.json({success: fail, message: 'Username Already Taken'});
-            } else {
-                res.json({success: true, message: 'Username Available'});
-            }
-        })
-    })
+        if(req.body.username){
+            User.findOne({username: req.body.username}).select('username').exec(function(err, user){
+                if(user){
+                    res.json({success: false, message: 'Username Already Taken'});
+                } else {
+                    res.json({success: true, message: 'Username Available'});
+                }
+            })
+        } else {
+            console.log('no username picked yet')
+        }
+
+    });
+    router.post('/checkuseremail', function(req ,res ){
+        if(req.body.email){
+            User.findOne({email: req.body.email}).select('email').exec(function(err, user){
+                if(user){
+                    res.json({success: false, message: 'Email Already exist with an account. Try Forgot Password'});
+                } else {
+                    res.json({success: true, message: ''});
+                }
+            })
+        } else {
+            console.log('no email sent')
+        }
+        
+    });
     // User Login API Route
     router.post('/authenticate', function(req, res){
         var cond = req.body.username == null || req.body.username == ' ' || req.body.password == null || req.body.password == ' ';
@@ -97,7 +187,9 @@ module.exports = function(router){
         }
 
     });
+    
 
+    // Json Web Tokens verification == to keep user logged in
     router.use(function(req, res, next){
         var localToken = req.body.token || req.body.query || req.headers['x-access-token'];
 
@@ -117,6 +209,8 @@ module.exports = function(router){
 
     router.post('/active', function(req, res){
        res.send(req.decoded);
-    })
+    });
+    
+
     return router;
 }

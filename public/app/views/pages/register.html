@@ -27,7 +27,7 @@
         </div>
         <div class="form-group">
             <label for="useremail">Email</label><span class="glyphicon glyphicon-ok" ng-show="regForm.useremail.$valid && !regForm.useremail.$pristine"></span><span class="glyphicon glyphicon-remove" ng-show="!regForm.useremail.$valid && !regForm.useremail.$pristine"></span>
-            <input type="email" class="form-control" name="useremail" placeholder="Enter Email" ng-model="register.regData.email" ng-pattern="/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i" required>
+            <input type="email" class="form-control" name="useremail" placeholder="Enter Email" ng-model="register.regData.email" ng-pattern="/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i" required ng-blur="register.checkuseremail(regData)">
             <div ng-messages="regForm.useremail.$error">
                 <p ng-message="required" ng-if="!regForm.useremail.$pristine">Email is Required</p>
                 <p ng-message="pattern">Email should match example@example.com</p>
@@ -55,7 +55,7 @@
             <div class="row show-hide-message" ng-show="register.successMsg">
                 <div class="alert alert-success">{{register.successMsg}}</div>
             </div>
-            <div class="row show-hide-message" ng-show="register.errorMsg">
+            <div class="row show-hide-message" ng-if="!regForm.$valid" ng-show="register.errorMsg">
                 <div class="alert alert-danger">{{register.errorMsg}}</div>
             </div>
         </div>

@@ -11,5 +11,8 @@ angular.module('userService',[])
     User.checkuseremail = function(regData){
         return $http.post('/api/checkuseremail', regData);
     }
+    User.sendverifyemail = function(regData){
+        return $http.post('/api/sendactivation', regData);
+    }
     return User;
 })

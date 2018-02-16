@@ -69,7 +69,11 @@ var emailValidator = [
             required: true,
             lowercase: true,
             unique:true,
-            validate: emailValidator}
+            validate: emailValidator},
+        isverified: {type: Boolean,
+                    required: true,
+                    default:false},
+        temptoken: {type: String},
     });
 
   UserSchema.pre('save', function(next){

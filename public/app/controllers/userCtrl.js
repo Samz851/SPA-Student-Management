@@ -12,14 +12,26 @@ angular.module('userController',['userService'])
             app.errorMsg = "Please make sure the form is complete and all fields are valid before submitting...";
         }else {
             User.create(app.regData).then(function(data){
-                console.log(data);
                 if(data.data.success){
                     app.loading = false;
-                    app.successMsg = data.data.message + "...Redirecting Please Hold!";
+                    app.successMsg = data.data.message + " To complete your registration we will send you an activation email";
+                    $timeout(function(){
+                        app.loading = true;
+                    }, 3000);
+                    User.sendverifyemail(app.regData).then(function(data){
+                        if(data.data.success){
+                            app.loading = false;
+                            successMsg = data.data.message + " Please check your email";
+                        }else{
+                            app.loading = false;
+                            errorMsg = data.data.message = " Could not send email"
+                        }
+                    });
                     //redirect to homepage
                     $timeout(function(){
                          $location.path('/');
-                    }, 2000);
+                    }, 4000);
+                    
                 }else{
                     app.loading = false;
                     app.errorMsg = data.data.message;}
@@ -31,26 +43,28 @@ angular.module('userController',['userService'])
             if(data.data.success){
                 app.loading = false;
                 app.successMsg = data.data.message;
+                $scope.regForm.username.$setValidity('duplicate_username', true);
             } else {
                 app.loading = false;
                 app.errorMsg = data.data.message;
+                $scope.regForm.username.$setValidity('duplicate_username', false);
             }
         })
         
     };
     this.checkuseremail = function(regData){
-        if(data.data.success){
-            app.loading = false;
-            app.successMsg = data.data.message;
-        } else {
-            app.loading = false;
-            app.errorMsg = data.data.message;
-        }
+        User.checkuseremail(app.regData).then(function(data){
+            if(data.data.success){
+                app.loading = false;
+                app.successMsg = data.data.message;
+                $scope.regForm.useremail.$setValidity('duplicate_email', true);
+            } else {
+                app.loading = false;
+                app.errorMsg = data.data.message;
+                $scope.regForm.useremail.$setValidity('duplicate_email', false);
+            }
+        })
     }
-
-// $scope.compare = function (repassword) {
-//     $scope.isconfirm = $scope.password == repassword ? true : false;
-//        }
 })
 
 .directive('matchPw', [function () {
