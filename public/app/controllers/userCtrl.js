@@ -17,19 +17,7 @@ angular.module('userController',['userService'])
                     app.successMsg = data.data.message + " To complete your registration we will send you an activation email";
                     $timeout(function(){
                         app.loading = true;
-                    }, 3000);
-                    User.sendverifyemail(app.regData).then(function(data){
-                        if(data.data.success){
-                            app.loading = false;
-                            successMsg = data.data.message + " Please check your email";
-                        }else{
-                            app.loading = false;
-                            errorMsg = data.data.message = " Could not send email"
-                        }
-                    });
-                    //redirect to homepage
-                    $timeout(function(){
-                         $location.path('/');
+                        $location.path('/');
                     }, 4000);
                     
                 }else{
@@ -37,6 +25,7 @@ angular.module('userController',['userService'])
                     app.errorMsg = data.data.message;}
         });
         }
+        console.trace('3:');
 };
     this.checkusername = function(regData){
         User.checkusername(app.regData).then(function(data){

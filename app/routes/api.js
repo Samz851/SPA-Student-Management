@@ -13,6 +13,7 @@ module.exports = function(router){
         user.email = req.body.email;
         user.firstname = req.body.firstname;
         user.lastname = req.body.lastname;
+        user.temptoken = jwt.sign({ username: req.body.username, email: req.body.email,}, secret, { expiresIn: '72h' });
         var cond = req.body.username == null || req.body.username == ' ' || req.body.password == null || req.body.password == ' ' || req.body.email == null || req.body.email == ' ';
         if(cond){
             res.json({ success: false, message: 'Please provide all required fields'});
@@ -42,63 +43,64 @@ module.exports = function(router){
                     } else {
                         res.json({success:false, message: err})};
                 } else {
-                    res.json({success: true, message: 'User Record Created Successfully'})
+                    res.json({success: true, message: 'User Record Created Successfully'});
+                    // Send email here
+                    verifyurl="http://127.0.0.1:3000/api/verifyemail";
+                    link=verifyurl+'?id='+user.temptoken;
+                    mailOptions={
+                        to : user.email,
+                        subject : "Please confirm your Email account",
+                        html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>" 
+                    }
+                    let mailTransporter = nodemailer.createTransport({
+                        service: 'Mailgun',
+                        auth: {
+                        api_key: 'key-be742a5d437c8958e763f1a361003941',
+                        domain: 'sandboxd3612106dbc141b7a5134f0fddce769a.mailgun.org',
+                        user: 'postmaster@sandboxd3612106dbc141b7a5134f0fddce769a.mailgun.org',
+                        pass: '12345',
+                        secure: false,
+                        }
+                    });
+                    mailTransporter.sendMail(mailOptions, function(err, res){
+                        if(error){
+                            console.log(error);
+                            res.end("error");
+                        }else{
+                            console.log("Message sent: " + res);
+                            res.end("sent");
+                        }
+                    });
                 }
             });
         }
     });
 
-    // Email Activation APIs
-    router.post('/sendactivation', function(req, res){
-        console.log('the request raw is as follows: \n' +req.body.email+'\n The end of the header');
-        var email= req.body.email;
-        var emailtoken = jwt.sign({
-            username: req.body.username,
-            email: req.body.email,
-          }, secret, { expiresIn: '72h' });
-        // find user
-        User.findOne({email: req.body.email}).select('temptoken').exec(function(err, user){
-            if(err){
-                console.log(err);
-            }else{
-                user.temptoken = emailtoken;
-                user.save((err, user) => {
-                    if (err) {
-                        console.log('could not save token');
-                    }else{
-                        console.log('token saved in database');
-                    }
-                });
-            }
-        });
-        verifyurl="http://127.0.0.1:3000/api/verifyemail";
-        link=verifyurl+'?id='+emailtoken;
-        mailOptions={
-            to : email,
-            subject : "Please confirm your Email account",
-            html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>" 
-        }
-        console.log(mailOptions);
-        let mailTransporter = nodemailer.createTransport({
-            service: 'Mailgun',
-            auth: {
-                api_key: 'key-be742a5d437c8958e763f1a361003941',
-                domain: 'sandboxd3612106dbc141b7a5134f0fddce769a.mailgun.org',
-                user: 'postmaster@sandboxd3612106dbc141b7a5134f0fddce769a.mailgun.org',
-                pass: '12345',
-                secure: false,
-            }
-        });
-        mailTransporter.sendMail(mailOptions, function(err, res){
-            if(error){
-                console.log(error);
-                res.end("error");
-            }else{
-                console.log("Message sent: " + res);
-                res.end("sent");
-            }
-        });
-    })
+                    // // Email Activation APIs
+                    // router.post('/sendactivation', function(req, res){
+                    //     console.log('the request raw is as follows: \n' +req.body.email+'\n The end of the header');
+                    //     var email= req.body.email;
+                    //     var emailtoken = jwt.sign({
+                    //         username: req.body.username,
+                    //         email: req.body.email,
+                    //       }, secret, { expiresIn: '72h' });
+                    //     // find user
+                    //     User.findOne({email: req.body.email}).select('temptoken').exec(function(err, user){
+                    //         if(err){
+                    //             console.log(err);
+                    //         }else{
+                    //             user.temptoken = emailtoken;
+                    //             user.save((err, user) => {
+                    //                 if (err) {
+                    //                     console.log('could not save token');
+                    //                 }else{
+                    //                     console.log('token saved in database');
+                    //                 }
+                    //             });
+                    //         }
+                    //     });
+                    //      });
+                    // })
     router.get('/verifyemail',function(req,res){
         console.log(req.headers);
         verifytoken = req.query.id;
@@ -122,7 +124,6 @@ module.exports = function(router){
                 }else{
                     res.json({message:'tokens do not match'});
                 }
-
             }
         })
     })
@@ -169,7 +170,7 @@ module.exports = function(router){
                     res.json({success:false, message: 'No records found'})
                 } else if (user){
                     // password validation
-                   var validLogin =  user.passwordMatch(req.body.password);
+                   var validLogin =  user.comparePassword(req.body.password);
                    if(!validLogin){
                        res.json({success: false, message: 'Password does not match record'});
                    } else {
