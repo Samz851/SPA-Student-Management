@@ -44,6 +44,18 @@ var app = angular.module('usermgmtRoutes',['ngRoute'])
             controllerAs: 'fb',
             loggedIn: false
         })
+        .when('/verifyemail/:token',{
+            templateUrl: 'app/views/pages/accountactivation.html',
+            controller: 'emailCtrl',
+            controllerAs: 'email',
+            loggedIn: false
+        })
+        .when('/resetpassword/:token',{
+            templateUrl: 'app/views/pages/resetpage.html',
+            controller: 'emailCtrl',
+            controllerAs: 'email',
+            loggedIn: false
+        })
         .otherwise({redirectTo: '/'});
 
         $locationProvider.html5Mode({

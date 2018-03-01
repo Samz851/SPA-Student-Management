@@ -1,7 +1,8 @@
 var User = require('../models/user.js');
 var jwt = require('jsonwebtoken');
 var secret = 'Samz851'; 
-var nodemailer = require("nodemailer");
+// var nodemailer = require("nodemailer");
+var eTemplate = require('../models/etemplates.js');
 
 module.exports = function(router){
 
@@ -44,89 +45,11 @@ module.exports = function(router){
                         res.json({success:false, message: err})};
                 } else {
                     res.json({success: true, message: 'User Record Created Successfully'});
-                    // Send email here
-                    verifyurl="http://127.0.0.1:3000/api/verifyemail";
-                    link=verifyurl+'?id='+user.temptoken;
-                    mailOptions={
-                        to : user.email,
-                        subject : "Please confirm your Email account",
-                        html : "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>" 
-                    }
-                    let mailTransporter = nodemailer.createTransport({
-                        service: 'Mailgun',
-                        auth: {
-                        api_key: 'key-be742a5d437c8958e763f1a361003941',
-                        domain: 'sandboxd3612106dbc141b7a5134f0fddce769a.mailgun.org',
-                        user: 'postmaster@sandboxd3612106dbc141b7a5134f0fddce769a.mailgun.org',
-                        pass: '12345',
-                        secure: false,
-                        }
-                    });
-                    mailTransporter.sendMail(mailOptions, function(err, res){
-                        if(error){
-                            console.log(error);
-                            res.end("error");
-                        }else{
-                            console.log("Message sent: " + res);
-                            res.end("sent");
-                        }
-                    });
+                    eTemplate.activationEmail(user.temptoken, user.email);
                 }
             });
         }
     });
-
-                    // // Email Activation APIs
-                    // router.post('/sendactivation', function(req, res){
-                    //     console.log('the request raw is as follows: \n' +req.body.email+'\n The end of the header');
-                    //     var email= req.body.email;
-                    //     var emailtoken = jwt.sign({
-                    //         username: req.body.username,
-                    //         email: req.body.email,
-                    //       }, secret, { expiresIn: '72h' });
-                    //     // find user
-                    //     User.findOne({email: req.body.email}).select('temptoken').exec(function(err, user){
-                    //         if(err){
-                    //             console.log(err);
-                    //         }else{
-                    //             user.temptoken = emailtoken;
-                    //             user.save((err, user) => {
-                    //                 if (err) {
-                    //                     console.log('could not save token');
-                    //                 }else{
-                    //                     console.log('token saved in database');
-                    //                 }
-                    //             });
-                    //         }
-                    //     });
-                    //      });
-                    // })
-    router.get('/verifyemail',function(req,res){
-        console.log(req.headers);
-        verifytoken = req.query.id;
-        tokenemail=''
-        jwt.verify(verifytoken, secret, function(err, decoded){
-            if(err){
-                console.log('could not decode token');
-            } else{
-                tokenemail = decoded.email;
-            }
-        });
-        User.findOne({email: tokenemail}).select('isverified temptoken').exec(function(err, user){
-            if(err){
-                console.log('could not find record');
-            }else {
-                if(req.query.id==user.temptoken){
-                    user.isverified = true;
-                    user.save(function(err, user){
-                        res.json({message: 'email tokens match and account is verified'})
-                    })
-                }else{
-                    res.json({message:'tokens do not match'});
-                }
-            }
-        })
-    })
 
     //Username & Email Check API
     router.post('/checkusername', function(req,res){
@@ -157,6 +80,90 @@ module.exports = function(router){
         }
         
     });
+    //email activation
+    router.put('/verifyemail/:token',function(req, res){
+        User.findOne({temptoken: req.params.token}).select('isverified temptoken username password').exec(function(err, user){
+            if(err) throw err
+            var token = req.params.token;
+            jwt.verify(token, secret, function(err, decoded) {
+                if(err) {
+                    res.json({success: false, message: ' token expired'})
+                } else if(!user) {
+                    res.json({success:false, message: 'account could not be found'});
+                } else {
+                    user.isverified = true;
+                    user.temptoken = 'verified';
+                    user.save(function(err){
+                        if(err) console.log(err);
+                        res.json({success: true, message: 'email tokens match and account is verified'})
+                    })
+                }
+            });
+
+        })
+    });
+
+    // Resend Username
+    router.put('/resendusername/:email', function(req, res){
+        var email = req.params.email;
+        User.findOne({email: email}).select('username').exec(function(err, username){
+            if(err) {
+                res.json({success: false, message:err})
+            } else {
+                eTemplate.resendUsername(email, username);
+                res.json({success:true, message: "Username sent to email"})
+            }            
+        })
+    });
+
+    // Send Password Link
+    router.put('/sendpasswordtoken/:email', function(req, res){
+        var email = req.params.email;
+        User.findOne({email: email}).select('firstname temptoken').exec(function(err, user){
+            if(err) {
+                res.json({success: false, message:err})
+            } else {
+                firstname = user.firstname
+                token = jwt.sign({ firstname: firstname, email: email}, secret, { expiresIn: '72h' });
+                user.temptoken = token
+                var sendUserinfo = eTemplate.resendPassword(email, firstname, token)
+                if(err) {
+                    res.json({success:false, message: "Reset Failed, Please contact us"})                    
+                } else {
+                    user.save(function(err){
+                        if(err){
+                            res.json({success: false, message: "Reset token was not saved, please retry the password reset"})
+                        } else {
+                            res.json({success:true, message: "Password reset link was sent to your email"});
+                        }
+                    })
+                }
+            }
+        })
+    })
+
+    // Reset Password Route
+    router.post('/resetpassword/:token',function(req, res){
+        User.findOne({temptoken: req.params.token}).select('temptoken username password').exec(function(err, user){
+            if(err) throw err
+            var token = req.params.token;
+            jwt.verify(token, secret, function(err, decoded) {
+                if(err) {
+                    res.json({success: false, message: ' token expired'})
+                } else if(!user || !user.username == req.body.username) {
+                    res.json({success:false, message: 'account could not be found'});
+                } else {
+                    user.temptoken = 'verified';
+                    user.save(function(err){
+                        if(err) console.log(err);
+                        res.json({success: true, message: 'email tokens match and reset was successful'})
+                    })
+                }
+            });
+
+        })
+    });
+
     // User Login API Route
     router.post('/authenticate', function(req, res){
         var cond = req.body.username == null || req.body.username == ' ' || req.body.password == null || req.body.password == ' ';
@@ -180,7 +187,7 @@ module.exports = function(router){
                         username: user.username,
                         email: user.email,
                         date: date
-                      }, secret, { expiresIn: '24h' });
+                      }, secret, { expiresIn: '10s' });
                        res.json({success: true, message: 'You are logged in', token: token})
                    }
                 }
@@ -205,6 +212,7 @@ module.exports = function(router){
               });
         } else {
             res.json({success: false, message: 'no token provided'});
+            next();
         }
     });
 

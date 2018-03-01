@@ -11,7 +11,7 @@ angular.module('userController',['userService'])
             app.loading = false;
             app.errorMsg = "Please make sure the form is complete and all fields are valid before submitting...";
         }else {
-            User.create(app.regData).then(function(data){
+            userFactory.create(app.regData).then(function(data){
                 if(data.data.success){
                     app.loading = false;
                     app.successMsg = data.data.message + " To complete your registration we will send you an activation email";
@@ -28,7 +28,7 @@ angular.module('userController',['userService'])
         console.trace('3:');
 };
     this.checkusername = function(regData){
-        User.checkusername(app.regData).then(function(data){
+        userFactory.checkusername(app.regData).then(function(data){
             if(data.data.success){
                 app.loading = false;
                 app.successMsg = data.data.message;
@@ -42,7 +42,7 @@ angular.module('userController',['userService'])
         
     };
     this.checkuseremail = function(regData){
-        User.checkuseremail(app.regData).then(function(data){
+        userFactory.checkuseremail(app.regData).then(function(data){
             if(data.data.success){
                 app.loading = false;
                 app.successMsg = data.data.message;

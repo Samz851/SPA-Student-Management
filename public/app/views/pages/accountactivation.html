@@ -1,0 +1,11 @@
+<div class="page-header" data-ng-init="email.activate()">
+    <h1>Account Activation Page</h1>
+    <div class="feedback">
+        <div class="row show-hide-message" ng-show="email.successMsg">
+            <div class="alert alert-success">{{email.successMsg}}</div>
+        </div>
+        <div class="row show-hide-message" ng-show="email.errorMsg">
+            <div class="alert alert-danger">{{email.errorMsg}}</div>
+        </div>
+    </div>
+</div>

@@ -40,7 +40,7 @@ var emailValidator = [
   var passwordValidator = [
       validate({
           validator: 'isLength',
-          arguments: [6, 24],
+          arguments: [6, 125],
           message: 'Password must be between {ARGS[0]} and {ARGS[1]} characters long',
       }),
       validate({
@@ -73,12 +73,15 @@ var emailValidator = [
         isverified: {type: Boolean,
                     required: true,
                     default:false},
-        temptoken: {type: String},
+        temptoken: {type: String,
+                    required: true
+                },
     });
 
   UserSchema.pre('save', function(next){
       // do stuff
       let user = this;
+      if (!user.isModified('password')) return next();
       bcrypt.hash(user.password, null, null, function(err, hash){
           if(err) return next(err);
           user.password = hash;

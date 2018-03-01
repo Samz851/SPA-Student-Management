@@ -32,7 +32,7 @@ angular.module('maincontroller',['authService'])
                 app.successMsg = data.data.message + "...Redirecting, please wait";
                 //Timeout redirecting to homepage
                 $timeout(function(){
-                    $location.path('/about');
+                    $location.path('/profile');
                     app.loginData = null;
                     app.successMsg = null;
                 }, 2000);
@@ -51,4 +51,55 @@ angular.module('maincontroller',['authService'])
             $location.path('/');
         },2000)
     }
+
+    this.resetUsername = function(){
+        
+    }
+    this.triggerModal = function(){
+        $('#reset').modal({
+            backdrop: 'static',
+            keyboard: false})
+    }
+})
+
+    //Password and Username Reset Controller
+.controller('resetCtrl', function(userFactory, $scope, $timeout){
+    $scope.loading = false;
+    
+    $scope.resendUsername = function(email){
+        $scope.loading = true;
+        userFactory.resendemail(email).then(function(data){
+            console.log(data);
+            if(data.success){
+                $scope.loading = false;
+                $scope.successMsg = data.data.message;
+                $timeout(function(){
+                    $('#reset').modal('hide');
+                },2000)
+
+            } else {
+                $scope.loading = false;
+                $scope.errorMsg = data.data.message;
+            }
+        })
+    }
+    $scope.resetPassword = function(email)
+    {
+        $scope.loading = true;
+        userFactory.sendpasswordlink(email).then(function(data){
+            console.log(data);
+            if(data.success){
+                $scope.loading = false;
+                $scope.successMsg = data.data.message;
+                $timeout(function(){
+                    $('#reset').modal('hide');
+                },2000)
+
+            } else {
+                $scope.loading = false;
+                $scope.errorMsg = data.data.message;
+            }
+        })
+    }
+    
 })
