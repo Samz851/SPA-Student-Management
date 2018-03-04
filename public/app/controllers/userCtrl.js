@@ -74,10 +74,6 @@ angular.module('userController',['userService'])
 .controller('fbCtrl', function($routeParams, Auth, $location, $window, $timeout){
     var app = this;
     if($window.location.pathname == '/facebookerror'){
-        // $timeout(function(){
-        //    
-        //     $location.path('/login');
-        // },2000);
         app.errorMsg = "Error: Could not match Facebook account to User in Database";
        
     } else {

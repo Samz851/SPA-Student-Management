@@ -64,22 +64,25 @@ var app = angular.module('usermgmtRoutes',['ngRoute'])
         });
 });
 
-app.run(['$rootScope', 'Auth', '$location', function($rootScope, Auth, $location){
+app.run(['$rootScope', 'Auth', '$location', function($rootScope, Auth, $location, user){
+    // Check on route change
     $rootScope.$on('$routeChangeStart', function(event, next, current,){
-        if(next.$$route.loggedIn == true){
-            if(!Auth.isLoggedIn()) {
-                event.preventDefault();
-                $location.path('/');
+        
+        //Limit check to required routes
+        if(next.$$route !== undefined){
+            //Check if authentication is required
+            if(next.$$route.loggedIn === true) {
+                if(!Auth.isLoggedIn()){
+                    event.preventDefault();
+                    $location.path('/');
+                }
+            } else if (next.$$route.authenticated === false){
+                // If no authentication required, prevent access to logged in users
+                if (Auth.isLoggedIn()){
+                    event.preventDefault();
+                    $location.path('/profile');
+                }
             }
-
-        } else if(next.$$route.loggedIn == false){
-            if(Auth.isLoggedIn()){
-                event.preventDefault();
-                $location.path('/profile');
-            }
-
-        } else (
-            console.log('property undefined')
-        )
+        }
     })
 }])

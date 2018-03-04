@@ -5,15 +5,15 @@
     <form ng-submit="main.loginUser(loginData);">
         <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Enter Username" ng-model="main.loginData.username">
+            <input type="text" class="form-control" autocomplete="username" id="username" placeholder="Enter Username" ng-model="main.loginData.username">
         </div>
         <div class="form-group">
             <label for="userpassword">Password</label>
-            <input type="password" class="form-control" id="userpassword" placeholder="Enter Password" ng-model="main.loginData.password"> 
+            <input type="password" class="form-control" autocomplete="current-password" id="userpassword" placeholder="Enter Password" ng-model="main.loginData.password"> 
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>&nbsp;
         <button type="button" class="btn btn-success" ng-click="main.fb()">FACEBOOK LOGIN</button>
-        <button type="button" class="btn btn-info" ng-click="main.triggerModal()">Reset Username/Password</button>
+        <button type="button" class="btn btn-info" ng-click="main.triggerModal('reset')">Reset Username/Password</button>
     </form>
     <div class="feedback">
         <div class="jumbotron text-center" ng-show="main.loading">

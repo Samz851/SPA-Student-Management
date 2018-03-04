@@ -91,7 +91,6 @@ var emailValidator = [
 
   UserSchema.methods.comparePassword = function(password) {
     return bcrypt.compareSync(password, this.password);
-            console.log('password do not match, DB password is: '+this.password+' while entered password is: '+password)
         } // Returns true if password matches, false if doesn't
 
   module.exports = mongoose.model('User', UserSchema);

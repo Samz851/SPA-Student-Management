@@ -7,7 +7,6 @@ angular.module('emailController',['userService'])
     // Check function that grabs token from URL and checks database runs on page load
     this.activate = function(){
         userFactory.activateaccount($routeParams.token).then(function(data) {
-            console.log(data);
             // Check if activation was successful or not
             if (data.data.success) {
                 app.successMsg = data.data.message + '...Redirecting'; // If successful, grab message from JSON object and redirect to login page
@@ -20,7 +19,6 @@ angular.module('emailController',['userService'])
 
     // Similar function to reset password
     this.resetpassword = function(resetData, valid){
-        console.log(resetData);
         app.errorMsg = resetData;
         if(!valid) {
             app.loading = false;

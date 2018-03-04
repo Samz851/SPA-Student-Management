@@ -62,7 +62,7 @@ module.exports = function(router){
                 }
             })
         } else {
-            console.log('no username picked yet')
+            return;
         }
 
     });
@@ -76,7 +76,7 @@ module.exports = function(router){
                 }
             })
         } else {
-            console.log('no email sent')
+            return;
         }
         
     });
@@ -94,7 +94,7 @@ module.exports = function(router){
                     user.isverified = true;
                     user.temptoken = 'verified';
                     user.save(function(err){
-                        if(err) console.log(err);
+                        if(err) throw err;
                         res.json({success: true, message: 'email tokens match and account is verified'})
                     })
                 }
@@ -106,12 +106,15 @@ module.exports = function(router){
     // Resend Username
     router.put('/resendusername/:email', function(req, res){
         var email = req.params.email;
-        User.findOne({email: email}).select('username').exec(function(err, username){
-            if(err) {
-                res.json({success: false, message:err})
+        if(email === null){
+            res.json({success:false, message: "No email"})
+        }
+        User.findOne({email: email}).select('username').exec(function(err, user){
+            if(!user) {
+                res.json({success: false, message:"No user found with this email"})
             } else {
-                eTemplate.resendUsername(email, username);
-                res.json({success:true, message: "Username sent to email"})
+                eTemplate.resendUsername(email, user);
+                res.json({success: true, message: "Username sent to email"})
             }            
         })
     });
@@ -120,8 +123,8 @@ module.exports = function(router){
     router.put('/sendpasswordtoken/:email', function(req, res){
         var email = req.params.email;
         User.findOne({email: email}).select('firstname temptoken').exec(function(err, user){
-            if(err) {
-                res.json({success: false, message:err})
+            if(!user) {
+                res.json({success: false, message:"No user found with this email"})
             } else {
                 firstname = user.firstname
                 token = jwt.sign({ firstname: firstname, email: email}, secret, { expiresIn: '72h' });
@@ -155,7 +158,7 @@ module.exports = function(router){
                 } else {
                     user.temptoken = 'verified';
                     user.save(function(err){
-                        if(err) console.log(err);
+                        if(err) throw err;
                         res.json({success: true, message: 'email tokens match and reset was successful'})
                     })
                 }
@@ -187,7 +190,7 @@ module.exports = function(router){
                         username: user.username,
                         email: user.email,
                         date: date
-                      }, secret, { expiresIn: '10s' });
+                      }, secret, { expiresIn: '60s' });
                        res.json({success: true, message: 'You are logged in', token: token})
                    }
                 }
@@ -218,6 +221,19 @@ module.exports = function(router){
 
     router.post('/active', function(req, res){
        res.send(req.decoded);
+    });
+
+    // Route to provide the user with a new token to renew session
+    router.get('/renewToken/:username', function(req, res) {
+        User.findOne({ username: req.params.username }).select('username email').exec(function(err, user) {
+            // Check if username was found in database
+            if (!user) {
+                res.json({ success: false, message: 'No user was found' }); // Return error
+            } else {
+                var newToken = jwt.sign({ username: user.username, email: user.email, session: "renewed" }, secret, { expiresIn: '90s' }); // Give user a new token
+                res.json({ success: true, message: "token refreshed", token: newToken }); // Return newToken in JSON object to controller
+            }
+        })
     });
     
 

@@ -24,5 +24,8 @@ angular.module('userService',[])
     User.resetpassword = function(token, data){
         return $http.post('/api/resetpassword/' + token, data);
     }
+    User.renewSession = function(username) {
+        return $http.get('/api/renewToken/' + username);
+    }
     return User;
 })

@@ -17,7 +17,6 @@ module.exports= function( app, passport){
     });
       
       passport.deserializeUser(function(id, done) {
-          console.log("this is the id in deserialize: " + id);
         User.findById(id, function(err, user) {
           done(err, user);
         });
@@ -30,7 +29,6 @@ module.exports= function( app, passport){
         profileFields: ['id', 'displayName', 'photos', 'email']
       },
       function(accessToken, refreshToken, profile, done) {
-          console.log("this is the email got it from fb: " + profile._json.email);
           User.findOne({email: profile._json.email}).select('username password email').exec(function(err, user){
               if(err) done(err);
               if(user && user != null) {

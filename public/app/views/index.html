@@ -39,12 +39,12 @@
                 </ul>
             </div>
         </nav>
-        <!-- MODAL -->
-        <div class="modal fade" id="reset" tabindex="-1" role="dialog" aria-labelledby="resetLabel" aria-hidden="true" ng-controller="resetCtrl">
+        <!-- Reset Password/Username MODAL -->
+        <div class="modal fade" id="reset" tabindex="-1" role="dialog" aria-labelledby="resetLabel" aria-hidden="true" ng-controller="resetCtrl as reset">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="resetLabel">Modal title</h5>
+                  <h5 class="modal-title" id="resetLabel">Reset Password/Username</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -52,20 +52,20 @@
                 <div class="modal-body">
                   <form>
                       <label>Please enter your email to send you a reset link</label>
-                      <input type="email" name="email" placeholder="enter your email" ng-model="email">
-                      <button type="button" class="btn btn-primary" ng-click="resendUsername(email)">Reset Username</button>
-                      <button type="button" class="btn btn-primary" ng-click="resetPassword(email)">Reset Password</button>
+                      <input type="email" name="email" placeholder="enter your email" ng-model="reset.email">
+                      <button type="button" class="btn btn-primary" ng-click="reset.resendUsername(reset.email)">Reset Username</button>
+                      <button type="button" class="btn btn-primary" ng-click="reset.resetPassword(reset.email)">Reset Password</button>
                   </form>
                   <div class="feedback">
-                        <div class="jumbotron text-center" ng-show="loading">
+                        <div class="jumbotron text-center" ng-show="reset.loading">
                             <span class="glyphicon glypicon-repeat spinner"></span>
                             <p>loading...</p>
                             </div>
-                            <div class="row show-hide-message" ng-show="successMsg">
-                                <div class="alert alert-success">{{successMsg}}</div>
+                            <div class="row show-hide-message" ng-show="reset.successMsg">
+                                <div class="alert alert-success">{{reset.successMsg}}</div>
                             </div>
-                            <div class="row show-hide-message" ng-show="errorMsg">
-                                <div class="alert alert-danger">{{errorMsg}}</div>
+                            <div class="row show-hide-message" ng-show="reset.errorMsg">
+                                <div class="alert alert-danger">{{reset.errorMsg}}</div>
                             </div>
                         </div>
                     </div>
@@ -73,6 +73,41 @@
               </div>
             </div>
         </div>
+
+          <!-- Expired Session MODAL -->
+          <div class="modal fade" id="session" tabindex="-1" role="dialog" aria-labelledby="sessionlabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="sessionlabel">Expired Session</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                      <label>You're session has expired, would you like to continue?</label>
+                      <button type="button" class="btn btn-primary" ng-click="main.renewSession()">Continue</button>
+                      <button type="button" class="btn btn-danger" ng-click="main.sessionLogout()">Logout</button>
+                  </form>
+                  <div class="feedback">
+                        <div class="text-center" ng-show="main.loading">
+                            <span class="glyphicon glypicon-repeat spinner"></span>
+                            <p>loading...</p>
+                            </div>
+                            <div class="row show-hide-message" ng-show="main.successMsg">
+                                <div class="alert alert-success">{{main.successMsg}}</div>
+                            </div>
+                            <div class="row show-hide-message" ng-show="main.errorMsg">
+                                <div class="alert alert-danger">{{main.errorMsg}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
     <main role="main" class="container" style="margin-top: 150px"><div ng-view class="jumbotron"></div></main><!-- /.container -->
 
         <!-- Bootstrap core JavaScript

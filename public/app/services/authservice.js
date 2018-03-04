@@ -1,5 +1,5 @@
 angular.module('authService',[])
-.factory('Auth', function($http, AuthToken, $q){
+.factory('Auth', function($window, $http, AuthToken, $q){
     authFactory={};
 
     authFactory.login = function(loginData){
@@ -28,7 +28,12 @@ angular.module('authService',[])
         } else {
             $q.reject({message: 'User has no token'});
         }
-    };
+    }
+
+    authFactory.parseJwtBody = function(token){
+        var tokenExp = token.split('.')[1];
+        return JSON.parse($window.atob(tokenExp));
+    }
 
     authFactory.logout = function(){
         AuthToken.setToken();

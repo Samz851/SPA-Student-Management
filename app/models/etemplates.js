@@ -22,22 +22,24 @@
         }
         mailTransporter.sendMail(mailOptions, function(err, res){
             if(err){
-                console.log(err);
                 res.JSON({success: false, message: "error sending email"})
             }else{
-                console.log("Message sent: " + res);
                 res.JSON({succes: true, message:"sent"});
             }
         });
     },
-    resendUsername: function(email, username){
+    resendUsername: function(email, user){
         mailOptions={
             to: email,
             subject: "Your Username at Localhost",
-            html: "Hello, \n You have requested your username\nUsername:"+username.username
+            html: "Hello, \n You have requested your username\nUsername:"+user.username
         }
         mailTransporter.sendMail(mailOptions, function(err, res){
-            if(err) throw err
+            if(err) {
+                res.JSON({success: false, message:"error sending email"})
+            }else{
+                res.JSON({success:true, message:"Username sent to your email"})
+            }
         })
     },
 
