@@ -1,10 +1,24 @@
 var User = require('../models/user.js');
 var jwt = require('jsonwebtoken');
 var secret = 'Samz851'; 
-// var nodemailer = require("nodemailer");
+var Student = require('../models/students.js');
 var eTemplate = require('../models/etemplates.js');
 
 module.exports = function(router){
+
+    //Student APIS -> through authenticated users only
+    router.get('/allstudents', function(req, res){
+        Student.find({}).select('name scores').exec(function(err, student){
+            if(err) {
+                console.log(err);
+            } else {
+                res.json({success:true, student});
+            }
+        })
+
+    })
+
+   
 
     //User Registration API Route
     router.post('/users', function(req, res) {
@@ -190,7 +204,7 @@ module.exports = function(router){
                         username: user.username,
                         email: user.email,
                         date: date
-                      }, secret, { expiresIn: '60s' });
+                      }, secret, { expiresIn: '1h' });
                        res.json({success: true, message: 'You are logged in', token: token})
                    }
                 }
@@ -230,12 +244,23 @@ module.exports = function(router){
             if (!user) {
                 res.json({ success: false, message: 'No user was found' }); // Return error
             } else {
-                var newToken = jwt.sign({ username: user.username, email: user.email, session: "renewed" }, secret, { expiresIn: '90s' }); // Give user a new token
+                var newToken = jwt.sign({ username: user.username, email: user.email, session: "renewed" }, secret, { expiresIn: '1h' }); // Give user a new token
                 res.json({ success: true, message: "token refreshed", token: newToken }); // Return newToken in JSON object to controller
             }
         })
     });
-    
+     //Add Student to Class
+     router.post('/addtoclass', function(req, res, err){
+         console.log('This is the req: \n'+req.body.name)
+         if(!req.body.name){
+             console.log("the error is:\n"+err);
+             res.json({ success: false, message: 'Could not add'})
+         } else {
+             // add student to teacher's class and add teacher as supervisor to student
+             res.json({ success: true, message: 'Student added to class'})
+            // console.trace('add to class \n')
+        }
+    })
 
     return router;
 }

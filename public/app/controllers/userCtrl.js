@@ -26,7 +26,7 @@ angular.module('userController',['userService'])
         });
         }
         console.trace('3:');
-};
+    };
     this.checkusername = function(regData){
         userFactory.checkusername(app.regData).then(function(data){
             if(data.data.success){

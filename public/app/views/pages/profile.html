@@ -4,17 +4,34 @@
 <div class="panel panel-info">
     <div class="panel-heading" style="text-align:center;">User Info</div>
     <table class="table">
+        <thead>
+            <td>Username</td>
+            <td>Email</td>
+        </thead>
+        <tr>
+            <td>{{main.logUsername}}</td>
+            <td>{{main.logUseremail}}</td>
+        </tr>
+        <tr>
+            <td>Reset Username: {{main.resetUsername()}}</td>
+            <td>Reset Password: {{main.resetPassword()}}</td>
+        </tr>
+    </table>
+    <div class="container" ng-controller="studentCtrl as student">
+        <table>
             <thead>
-                <td>Username</td>
-                <td>Email</td>
+                <tr>
+                    <td>Name</td>
+                    <td colspan="6">Scores</td>
+                </tr>
             </thead>
-            <tr>
-                <td>{{main.logUsername}}</td>
-                <td>{{main.logUseremail}}</td>
-            </tr>
-            <tr>
-                <td>Reset Username: {{main.resetUsername()}}</td>
-                <td>Reset Password: {{main.resetPassword()}}</td>
-            </tr>
+            <tbody ng-repeat=" x in student.students">
+                <td>{{ x.name }}</td>
+                <td ng-repeat =" y in x.scores">{{ y.type }} : {{ y.score | number:2 }}</td>
+                <td><button type="button" ng-click="student.addToClass(x.name)"></button></td>
+            </tbody>
         </table>
+        <button type="button" ng-click="student.fetchStudents()">Fetch</button>
+        <p>{{ student.show }}</p>
+    </div>
 </div>
