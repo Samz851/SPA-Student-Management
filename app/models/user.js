@@ -51,6 +51,7 @@ var emailValidator = [
 ]
 
     var UserSchema = new Schema({
+        _id: Schema.Types.ObjectId,
         firstname: {type: String,
             required: true,
             validate: nameValidator}, 
@@ -76,7 +77,10 @@ var emailValidator = [
         temptoken: {type: String,
                     required: true
                 },
-    });
+        role: {type: String,
+                required: true},
+        class: {type: Schema.Types.ObjectId, ref: 'Class'}
+    })
 
   UserSchema.pre('save', function(next){
       // do stuff

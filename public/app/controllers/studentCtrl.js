@@ -12,8 +12,8 @@ angular.module('studentController', ['studentService'])
                 console.log("could not load student module:\n"+err)
             }
     })
-    this.addToClass = function(studentName){
-        studentFactory.addToClass(studentName).then(function(err){
+    this.addToClass = function(studentName, supervisorName){
+        studentFactory.addToClass(studentName, supervisorName).then(function(err){
             if(err){
                 app.show = "failed to add class";
             } else {

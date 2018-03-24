@@ -1,0 +1,94 @@
+<div class= "container-fluid nav-container">
+    <nav class="navbar navbar-dark navbar-expand-md container">
+            <a class="navbar-brand" href="#"><strong>Edu-Gate</strong></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li ui-sref-active = "active" class="nav-item"><a class="nav-link" ui-sref="app.welcome">Home </a></li>
+                <li ui-sref-active = "active" class="nav-item"><a class="nav-link" ui-sref="app.about">About</a></li>
+                <li ui-sref-active = "active" ng-hide="main.isLoggedIn" class="nav-item"><a class="nav-link" ui-sref="app.register">Registration</a></li>
+                <li ui-sref-active = "active" ng-hide="main.isLoggedIn" class="nav-item"><a class="nav-link" ui-sref="app.login">Login</a></li>
+                <li ui-sref-active = "active" ng-hide="!main.isLoggedIn" class="nav-item"><a class="nav-link" ui-sref="app.logout" ng-click="main.logout()">LogOUT</a></li>
+                <li ui-sref-active = "active" ng-hide="!main.isLoggedIn" class="nav-item"><a class="nav-link" ui-sref="app.dashboard">Dashboard</a></li>
+            </ul>
+            <div class="float-right" ng-hide="!main.isLoggedIn" ><a ui-sref="app.dashboard">{{logUsername}}</a></div>
+        </div>
+    </nav>
+    
+</div>
+<!-- Reset Password/Username MODAL -->
+<div class="modal fade" id="reset" tabindex="-1" role="dialog" aria-labelledby="resetLabel" aria-hidden="true" ng-controller="resetCtrl as reset">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resetLabel" style="color:antiquewhite">Reset Password/Username</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+              <div class="row">
+                <label class="col-form-label col-md-4">Please enter your email to send you a reset link</label>
+                <input type="email" name="email" placeholder="enter your email" ng-model="reset.email" class="col-md-8">
+              </div>
+              <div class="row">
+                <button type="button" class="button btn-primary" ng-click="reset.resendUsername(reset.email)">Reset Username</button>
+                <button type="button" class="button btn-primary" ng-click="reset.resetPassword(reset.email)">Reset Password</button>
+            </div>
+          </form>
+          <div class="feedback">
+                <div class="jumbotron text-center" ng-show="reset.loading">
+                    <span class="glyphicon glypicon-repeat spinner"></span>
+                    <p>loading...</p>
+                    </div>
+                    <div class="row show-hide-message" ng-show="reset.successMsg">
+                        <div class="alert alert-success">{{reset.successMsg}}</div>
+                    </div>
+                    <div class="row show-hide-message" ng-show="reset.errorMsg">
+                        <div class="alert alert-danger">{{reset.errorMsg}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <!-- Expired Session MODAL -->
+  <div class="modal fade" id="session" tabindex="-1" role="dialog" aria-labelledby="sessionlabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="sessionlabel">Expired Session</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+              <label>You're session has expired, would you like to continue?</label>
+              <button type="button" class="button btn-primary" ng-click="main.renewSession()">Continue</button>
+              <button type="button" class="button btn-danger" ng-click="main.sessionLogout()">Logout</button>
+          </form>
+          <div class="feedback">
+                <div class="text-center" ng-show="main.loading">
+                    <span class="glyphicon glypicon-repeat spinner"></span>
+                    <p>loading...</p>
+                    </div>
+                    <div class="row show-hide-message" ng-show="main.successMsg">
+                        <div class="alert alert-success">{{main.successMsg}}</div>
+                    </div>
+                    <div class="row show-hide-message" ng-show="main.errorMsg">
+                        <div class="alert alert-danger">{{main.errorMsg}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main role="main"  ui-view="main">
+</main><!-- /.container -->

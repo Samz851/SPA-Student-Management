@@ -7,6 +7,7 @@ var scoresSchema = new Schema({
 })
 
 var StudentSchema = new Schema({
+    _id: Schema.Types.ObjectId,
     name: String,
     scores: [scoresSchema],
     supervisor: String
@@ -16,3 +17,4 @@ var StudentSchema = new Schema({
 StudentSchema.methods.findClassAverage = function(key, values, rereduce){
 }
 module.exports = mongoose.model('Student', StudentSchema);
+

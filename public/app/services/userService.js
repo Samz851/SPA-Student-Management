@@ -16,7 +16,6 @@ angular.module('userService',[])
     };
     User.resendemail= function(email){
         return $http.put('/api/resendusername/'+ email);
-        console.trace('userserv');
     }
     User.sendpasswordlink = function(email){
         return $http.put('/api/sendpasswordtoken/' + email);

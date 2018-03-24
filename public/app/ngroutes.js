@@ -56,6 +56,10 @@ var app = angular.module('usermgmtRoutes',['ngRoute'])
             controllerAs: 'email',
             loggedIn: false
         })
+        .when('/newcourse',{
+            templateUrl: 'app/views/page/administration/newcourse.html',
+            loggedIn: true
+        })
         .otherwise({redirectTo: '/'});
 
         $locationProvider.html5Mode({
@@ -66,7 +70,7 @@ var app = angular.module('usermgmtRoutes',['ngRoute'])
 
 app.run(['$rootScope', 'Auth', '$location', function($rootScope, Auth, $location, user){
     // Check on route change
-    $rootScope.$on('$routeChangeStart', function(event, next, current,){
+    $rootScope.$on('$routeChangeStart', function(event, next, current){
         
         //Limit check to required routes
         if(next.$$route !== undefined){

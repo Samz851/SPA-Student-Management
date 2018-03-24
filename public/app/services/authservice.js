@@ -1,17 +1,26 @@
-angular.module('authService',[])
-.factory('Auth', function($window, $http, AuthToken, $q){
+angular.module('authService',['authTokenFactory'])
+.factory('Auth', function($window, $http, $q, $rootScope, $state, AuthToken, $timeout){
+    // UI-Router related variables
+    
     authFactory={};
+    identityAuthenticated = false;
+    authFactory.identity = {
+        role: 'guest'
+    }
 
     authFactory.login = function(loginData){
         return $http.post('/api/authenticate', loginData)
         .then(function(data) {
             AuthToken.setToken(data.data.token);
+            identityAuthenticated = true;
+            // getUser
             return data;
         });
     };
 
     authFactory.isLoggedIn = function() {
         if(AuthToken.getToken()) {
+            identityAuthenticated = true;
             return true;
         } else {
             return false;
@@ -23,11 +32,30 @@ angular.module('authService',[])
     }
 
     authFactory.getUser = function(){
-        if(AuthToken.getToken()) {
-            return $http.post('/api/active');
-        } else {
-            $q.reject({message: 'User has no token'});
-        }
+        var deferred = $q.defer();
+        authFactory.decodeToken().then(function(data){
+            if(data){
+                deferred.resolve(data);
+                identityAuthenticated = true;
+                if(!data.data.success){ // has token
+                    authFactory.identity.username = 'Guest1'
+                    authFactory.identity.role = 'guest'; 
+                }else{ // does not have token
+                    authFactory.identity.username = data.data.decoded.username;
+                    authFactory.identity.role = data.data.decoded.role;
+                }
+                
+            }else{ // error
+                deferred.reject(console.log('token not decoded'));
+                identityAuthenticated = false;
+                authFactory.identity.role = 'guest';
+            }  
+        })
+        return deferred.promise;
+    }
+
+    authFactory.decodeToken = function(){
+       return $http.post('/api/active');
     }
 
     authFactory.parseJwtBody = function(token){
@@ -38,32 +66,13 @@ angular.module('authService',[])
     authFactory.logout = function(){
         AuthToken.setToken();
     }
+    //UI-Router related services
+   
     return authFactory;
 })
 
-.factory('AuthToken', function($window){
-    var authTokenFactory = {};
-    authTokenFactory.setToken = function(token) {
-        if(token) {
-        $window.localStorage.setItem('token', token);
-        } else {
-            $window.localStorage.removeItem('token', token);
-        }
-    };
-
-    authTokenFactory.getToken = function() {
-        return $window.localStorage.getItem('token');
-    };
-    return authTokenFactory;
-})
-
-.factory('authInterceptors', function(AuthToken){
-    var authInterceptorsFactory = {};
-    authInterceptorsFactory.request = function(config){
-        var token = AuthToken.getToken();
-        if(token) config.headers['x-access-token'] = token;
-        return config;
-    }
-
-    return authInterceptorsFactory;
+.factory('authRouterFactory', function( $rootScope, $state, Auth){
+    var authRouterFactory = {};
+    
+    return authRouterFactory;
 })

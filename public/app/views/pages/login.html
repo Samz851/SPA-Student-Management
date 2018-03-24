@@ -1,19 +1,23 @@
-<div class="container">
+<div class="container col-md-6 text-center login-page">
     <div class="page-header">
-        <h3>User Login</h3>
+        <h3>Administrators Login</h3>
     </div>
     <form ng-submit="main.loginUser(loginData);">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" autocomplete="username" id="username" placeholder="Enter Username" ng-model="main.loginData.username">
+        <div class="form-group row">
+            <label class="col-form-label col-md-2" for="username">Username</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" autocomplete="username" id="username" placeholder="Enter Username" ng-model="main.loginData.username">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="userpassword">Password</label>
-            <input type="password" class="form-control" autocomplete="current-password" id="userpassword" placeholder="Enter Password" ng-model="main.loginData.password"> 
+        <div class="form-group row">
+            <label class="col-form-label col-md-2" for="userpassword">Password</label>
+            <div class="col-md-10">
+                <input type="password" class="form-control" autocomplete="current-password" id="userpassword" placeholder="Enter Password" ng-model="main.loginData.password">
+            </div> 
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>&nbsp;
-        <button type="button" class="btn btn-success" ng-click="main.fb()">FACEBOOK LOGIN</button>
-        <button type="button" class="btn btn-info" ng-click="main.triggerModal('reset')">Reset Username/Password</button>
+        <button type="submit" class="button btn-primary">Submit</button>&nbsp;
+        <button type="button" class="button btn-success" ng-click="main.fb()">FACEBOOK LOGIN</button>
+        <button type="button" class="button btn-info" ng-click="main.triggerModal('reset')">Reset Username/Password</button>
     </form>
     <div class="feedback">
         <div class="jumbotron text-center" ng-show="main.loading">

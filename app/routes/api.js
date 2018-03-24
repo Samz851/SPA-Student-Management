@@ -188,7 +188,7 @@ module.exports = function(router){
         if(cond){
             res.json({success: false, message: 'Make sure to fill all fields'});
         }else {
-            User.findOne({username: req.body.username}).select('email username password').exec(function(err, user){
+            User.findOne({username: req.body.username}).select('firstname lastname username password role').exec(function(err, user){
                 if(err) throw err;
                 if(!user){
                     res.json({success:false, message: 'No records found'})
@@ -198,14 +198,16 @@ module.exports = function(router){
                    if(!validLogin){
                        res.json({success: false, message: 'Password does not match record'});
                    } else {
+                    var name = user.firstname +" "+user.lastname;
                     var date = new Date();
                     date = date.getDate();
                     var token = jwt.sign({
                         username: user.username,
-                        email: user.email,
+                        name: name,
+                        role: user.role,
                         date: date
-                      }, secret, { expiresIn: '1h' });
-                       res.json({success: true, message: 'You are logged in', token: token})
+                      }, secret, { expiresIn: '600s' });
+                       res.json({success: true, message: 'You are logged in', token: token, username: user.username, role : user.role})
                    }
                 }
             })
@@ -223,7 +225,8 @@ module.exports = function(router){
                 if(err) {
                     res.json({success: false, message: ' Token could not be verified'})
                 } else {
-                    req.decoded = decoded;
+                    req.decoded = {success: true,
+                                    decoded: decoded}
                     next();
                 }
               });
@@ -251,8 +254,7 @@ module.exports = function(router){
     });
      //Add Student to Class
      router.post('/addtoclass', function(req, res, err){
-         console.log('This is the req: \n'+req.body.name)
-         if(!req.body.name){
+         if(!req.body.studentname){
              console.log("the error is:\n"+err);
              res.json({ success: false, message: 'Could not add'})
          } else {

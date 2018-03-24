@@ -1,10 +1,13 @@
-angular.module('usermgmt-ui', ['usermgmtRoutes',
+angular.module('edugate', ['edugateRoutesUI',
                                 'ngAnimate',
-                                'maincontroller',
                                 'authService',
+                                'maincontroller',
                                 'ngMessages',
                                 'emailController',
-                                'studentController'])
+                                'studentController',
+                                'userController',
+                                'authTokenFactory'
+                                ])
 .config(function($httpProvider){
     $httpProvider.interceptors.push('authInterceptors');
 

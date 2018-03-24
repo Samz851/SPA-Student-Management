@@ -6,9 +6,11 @@ angular.module('studentService',[])
     Student.fetchStudents = function(){
        return $http.get('/api/allstudents');
     }
-    Student.addToClass = function( student ){
-        var data = ({name: student});
+    Student.addToClass = function( student, supervisor ){
+        var data = ({studentname: student,
+                    supervisorname: supervisor});
         console.log(student);
+        console.log(supervisor);
         return $http.post('/api/addtoclass', data);
     }
     return Student;
