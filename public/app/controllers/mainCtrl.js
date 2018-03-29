@@ -10,8 +10,7 @@ angular.module('maincontroller',['authService'])
     app.logUserRole;
     app.isLoggedIn = Auth.isLoggedIn();
     $scope.logUsername = Auth.identity.username;
-    
-    
+
 
     // function to set Name
 
@@ -43,12 +42,12 @@ angular.module('maincontroller',['authService'])
                 var timeStamp = Math.floor(Date.now()/1000);
                 var difference = expTime - timeStamp;
                 if(difference > 30 ){
-                    console.log(difference + " : "+Auth.isLoggedIn() + " : " +$scope.logUsername);
+                    // console.log(difference + " : "+Auth.isLoggedIn() + " : " +$scope.logUsername);
                 }
                 else if(difference  > 0 && difference <= 30 ) {
                     app.triggerModal('session');
                     app.loading = false;
-                    console.log('Token Expired');
+                    // console.log('Token Expired');
                 } else {
                     app.loading = false;
                     $scope.logUsername = null;
@@ -64,6 +63,7 @@ angular.module('maincontroller',['authService'])
             }
         }, 2000)
     }
+    app.checkSession()
 
     
     this.getName = function(){

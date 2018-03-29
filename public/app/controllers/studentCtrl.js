@@ -11,16 +11,52 @@ angular.module('studentController', ['studentService'])
             } else {
                 console.log("could not load student module:\n"+err)
             }
-    })
-    this.addToClass = function(studentName, supervisorName){
-        studentFactory.addToClass(studentName, supervisorName).then(function(err){
-            if(err){
-                app.show = "failed to add class";
-            } else {
-                //hide student data
-                app.show = "Student added to class";
-            }
         })
     }
-}
+    this.addNewStudent = function(studentData){
+        if(studentData){
+            studentFactory.addNewStudent(studentData).then(function(data){
+                if(data.data.success){
+                    console.log("new student added Successfully");
+                } else{
+                    console.log("could not add new student")
+                }
+            })
+        }
+    }
+    this.fetchStudentRecord = function(student){
+        console.log(student)
+        if(student){
+            studentFactory.getStudentRec(student).then(function(data){
+                if(data.data.success){
+                    console.log(JSON.stringify(data.data));
+                    app.stdRec = data.data.student;
+                    app.studentID = app.stdRec.studentid;
+                    app.studentName = app.stdRec.name;
+                    app.studentEmail = app.stdRec.email;
+                    app.academicCard = app.stdRec.academic;
+                    app.studentScores = app.stdRec.academic.score;
+                }else{
+                    console.log("failed getting student record");
+                }
+            })
+        }
+    }
+    this.enableEdit = function(){
+      $('#student-record input').each(function(){
+          $(this).removeAttr('readonly');
+      })
+    }
+    this.updateRecord = function(studentID, studentName, studentEmail, card){
+        recObj = {}
+        recObj.ID = studentID;
+        recObj.name = studentName;
+        recObj.email = studentEmail;
+        recObj.courses = []
+        angular.forEach(card, function(value, key){
+            recObj.courses.unshift(value);
+        })
+        studentFactory.updateRecord(recObj)
+
+    }
 })

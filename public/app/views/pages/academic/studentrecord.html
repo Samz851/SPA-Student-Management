@@ -1,0 +1,37 @@
+<div class="page-header">
+    <h3>Update student Record</h3>
+</div>
+<div class="form-group row">
+    <label for="studentID" class="col-form-label col-md-2">Student ID#</label>
+    <input type="text" class="form-control col" name="studentID" placeholder="" ng-model="academicStd.studentID" required >
+    <button type="button" class="button btn-primary form-control col" ng-click="academicStd.fetchStudentRecord(academicStd.studentID)">Fetch Records</button>
+</div>
+<form name="studentRecForm" id="studentRecForm"></form>
+<table class = "table table-hover" style="max-width:90%" id="student-record">
+    <thead>
+        <td colspan="1">#ID</td>
+        <td colspan="2">Student Name</td>
+        <td colspan="2">Student Email</td>
+        <td colspan="5">Classes Enrolled</td>
+        <td>Edit</td>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="1">{{ academicStd.studentID }}</td>
+            <td colspan="2"><input form="studentRecForm" name="student-name" type="text" readonly ng-model="academicStd.studentName" ></td>
+            <td colspan="2"><input form="studentRecForm" name="student-email" type="text" ng-model="academicStd.studentEmail" readonly ></td>
+            <td colspan="5"><table>
+                <tr ng-repeat="card in academicStd.academicCard track by $index">
+                    <td><input form="studentRecForm" name="student-class" type="text" ng-model="card.class.classCode" readonly></td>
+                    <td><table id="table-scores"><tr ng-repeat="score in card.score track by $index">
+                        <td><input form="studentRecForm" name="student-score-type" type="text" ng-model="score.type" readonly></td>
+                        <td><input form="studentRecForm" name="student-score-score" type="text" ng-model="score.score" readonly></td>
+                    </tr></table></td>
+                </tr>
+            </table></td>
+            <td><button class="button btn-info" type="button" ng-click="academicStd.enableEdit()">Edit</button><button class="button btn-warning" type="button" ng-click="academicStd.updateRecord(academicStd.studentID, academicStd.studentName, academicStd.studentEmail, academicStd.academicCard)"></button></td>
+        </tr>
+    </tbody>
+
+</table>
+<div ui-view="recordView"></div>

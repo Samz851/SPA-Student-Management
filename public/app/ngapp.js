@@ -3,10 +3,13 @@ angular.module('edugate', ['edugateRoutesUI',
                                 'authService',
                                 'maincontroller',
                                 'ngMessages',
+                                'ngMaterial',
                                 'emailController',
                                 'studentController',
                                 'userController',
-                                'authTokenFactory'
+                                'authTokenFactory',
+                                'classcontroller',
+                                'classSrv'
                                 ])
 .config(function($httpProvider){
     $httpProvider.interceptors.push('authInterceptors');

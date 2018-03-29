@@ -1,15 +1,16 @@
 angular.module('emailController',['userService'])
 
 // Activating user account through email link
-.controller('emailCtrl', function($routeParams, userFactory, $location){
+.controller('emailCtrl', function($stateParams, userFactory, $location, $state){
     app = this;
 
     // Check function that grabs token from URL and checks database runs on page load
     this.activate = function(){
-        userFactory.activateaccount($routeParams.token).then(function(data) {
+        userFactory.activateaccount($stateParams.token).then(function(data) {
             // Check if activation was successful or not
             if (data.data.success) {
                 app.successMsg = data.data.message + '...Redirecting'; // If successful, grab message from JSON object and redirect to login page
+                $state.go('app.login');
             } else {
                 app.errorMsg = data.data.message + '...Redirecting'; // If not successful, grab message from JSON object and redirect to login page
             }

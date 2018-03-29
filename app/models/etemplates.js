@@ -1,7 +1,7 @@
 
     var nodemailer = require("nodemailer");
 
-    const domain = "http://127.0.0.1:3000/"
+    const domain = "http://127.0.0.1:3100/"
     let mailTransporter = nodemailer.createTransport({
         service: 'Mailgun',
         auth: {
@@ -22,7 +22,8 @@
         }
         mailTransporter.sendMail(mailOptions, function(err, res){
             if(err){
-                res.JSON({success: false, message: "error sending email"})
+                console.log('Error in email: '+err)
+                //res.JSON({success: false, message: "error sending email"})
             }else{
                 res.JSON({succes: true, message:"sent"});
             }

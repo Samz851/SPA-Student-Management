@@ -2,13 +2,17 @@
 
 html {
     font-size: 18px;
+
 }
 h1,h2,h3,h4,h5,p, label {
     color:white;
 }
 input[type]:not([type=hidden]) {
     border-radius: 0px;
-    background-color: white !important;
+    background-color: white;
+}
+input:read-only {
+    background-color: rgb(209, 209, 209) !important;
 }
 
 /* Default Override */
@@ -24,6 +28,7 @@ body {
     url(/assets/img/background_1920.jpg); 
     background-repeat: no-repeat;
     background-attachment: fixed;
+    height:initial !important;
 }
 .row {
     margin:0;
@@ -360,6 +365,9 @@ input:focus.ng-dirty.ng-valid {
   }
   .table-dark {
       background-color: #565656;
+  }
+  #table-scores input {
+      max-width: 50px;
   }
 
 

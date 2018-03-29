@@ -6,12 +6,17 @@ angular.module('studentService',[])
     Student.fetchStudents = function(){
        return $http.get('/api/allstudents');
     }
-    Student.addToClass = function( student, supervisor ){
-        var data = ({studentname: student,
-                    supervisorname: supervisor});
-        console.log(student);
-        console.log(supervisor);
-        return $http.post('/api/addtoclass', data);
+    Student.addNewStudent = function(studentData){
+        return $http.post('/api/adminapi/addnewstudent', studentData)
+    }
+    Student.getStudentRec = function(student){
+        return $http.get('/api/adminapi/getstdrec/'+student)
+    }
+    Student.updateRecord = function(record){
+
+        console.log('StudentFactory record is: '+JSON.stringify(record))
+
+        return $http.put('/api/adminapi/updatestdrec', record)
     }
     return Student;
 })

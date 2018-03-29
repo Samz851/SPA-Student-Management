@@ -1,9 +1,9 @@
 <div class="page-container container-fluid col-md-12 row" data-ng-init="main.getName()">
         <div class="welcome col-md-5" data-ng-init="main.loadWelcome()">
                 <h3 class="page-header" ng-show="logUsername">Hello {{logUsername}} </h3>
-                <div id="shape1"><a class= "label slide-left" href="/login">Administrators</a></div>
-                <div id="shape2"><a class= "label slide-right" href="/login">Instructors</a></div>
-                <div id="rectangle"><a class= "label slide-left" href="/login">Students</a></div>
+                <div id="shape1"><a class= "label slide-left" ui-sref="app.login">Administrators</a></div>
+                <div id="shape2"><a class= "label slide-right" ui-sref="app.login">Instructors</a></div>
+                <div id="rectangle"><a class= "label slide-left" ui-sref="app.login">Students</a></div>
         </div>
         <div class="welcome-content col-md-7 text-right">
                 <h3 class="page-header">Sign up Today to one of our classes:</h3>

@@ -35,25 +35,25 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService'])
 					
 				}
 			];
-	var filterAcess = ['Auth','$state','$transitions','$q', // create function that checks route
-		function(Auth, $state, $transitions, $q){
-			var deferred = $q.defer();
-			if(!hasToken){
+	// var filterAcess = ['Auth','$state','$transitions','$q', // create function that checks route
+	// 	function(Auth, $state, $transitions, $q){
+	// 		var deferred = $q.defer();
+	// 		if(!hasToken){
 
-				deferred.resolve($state.go('app.login'));
-			} else {	// User is Logged in
-					Authenticate;
-					console.log('userRole: '+userRole)
-					console.log('data.roles for state '+$transitions.to().name+' is: '+$transitions.to().data.roles)
-					var stateRoles = $transitions.to().data.roles;
-				if(!stateRoles.includes(userRole)){
+	// 			deferred.resolve($state.go('app.login'));
+	// 		} else {	// User is Logged in
+	// 				Authenticate;
+	// 				console.log('userRole: '+userRole)
+	// 				console.log('data.roles for state '+$transitions.to().name+' is: '+$transitions.to().data.roles)
+	// 				var stateRoles = $transitions.to().data.roles;
+	// 			if(!stateRoles.includes(userRole)){
 
-					deferred.resolve($state.go('app.accessdenied'));
-				}
-			}
-			return deferred;
-		}
-	]
+	// 				deferred.resolve($state.go('app.accessdenied'));
+	// 			}
+	// 		}
+	// 		return deferred;
+	// 	}
+	// ]
 
 	$stateProvider
 
@@ -78,8 +78,8 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService'])
 			views: {
 				"main": {
 					templateUrl: "app/views/pages/home.html",
-					controller: 'mainCtrl',
-					controllerAs: 'main',
+					// controller: 'mainCtrl',
+					// controllerAs: 'main',
 				}
 			},
 			data: {
@@ -150,9 +150,55 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService'])
 			},
 			resolve: {
 				Authenticate: Authenticate,
-				// filterAcess: filterAcess
 			}
 		})
+			.state('app.dashboard.addnewclass', {
+				url: '/dashboard/addnewclass',
+				views: {
+					"dashview": {
+						templateUrl: 'app/views/pages/administration/dashboard/addnewclass.html',
+						controller: 'classCtrl',
+						controllerAs: 'class'
+					}
+				},
+				data: {
+					roles: ['admin', 'instructor'],
+					private: true
+				},
+				resolve: {
+					Authenticate: Authenticate,
+				}
+			})
+			.state('app.dashboard.enrollstudents', {
+				url: '/dashboard/enrollstudents',
+				views: {
+					"dashview": {
+						templateUrl: 'app/views/pages/administration/dashboard/enrollstudent.html',
+						controller: 'classCtrl',
+						controllerAs: 'classCtrl'
+					}
+				}
+			})
+			.state('app.dashboard.addnewstudent', {
+				url: '/dashboard/addnewstudent',
+				views: {
+					"dashview": {
+						templateUrl: 'app/views/pages/administration/dashboard/addnewstudent.html',
+						controller: 'studentCtrl',
+						controllerAs: 'studentCtrl'
+					}
+				}
+			})
+			.state('app.dashboard.updtstudentrec', {
+				url: '/dashboard/updtstudent',
+				views: {
+					"dashview":{
+						templateUrl: 'app/views/pages/academic/studentrecord.html',
+						controller: 'studentCtrl',
+						controllerAs: 'academicStd'
+					}
+				}
+			})
 		.state('app.privacy', {
 			url: '/privacy',
 			views: {

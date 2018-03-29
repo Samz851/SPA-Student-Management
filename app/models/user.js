@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var ObjectId = Schema.Types.ObjectId;
 var validate = require('mongoose-validator');
 const bcrypt = require('bcrypt-nodejs');
 
@@ -7,7 +8,7 @@ const bcrypt = require('bcrypt-nodejs');
 var nameValidator = [
     validate({
         validator: 'matches',
-        arguments: /^[a-zA-Z]+$/,
+        arguments: /^[a-zA-Z\s]*$/,
         message: 'Name should only contain letters',
     })
 ]
@@ -51,11 +52,10 @@ var emailValidator = [
 ]
 
     var UserSchema = new Schema({
-        _id: Schema.Types.ObjectId,
-        firstname: {type: String,
+        _id: {type: ObjectId,
             required: true,
-            validate: nameValidator}, 
-        lastname: {type: String,
+            auto: true},
+       name: {type: String,
             required: true,
             validate: nameValidator},
         username: {type: String,
@@ -78,8 +78,9 @@ var emailValidator = [
                     required: true
                 },
         role: {type: String,
-                required: true},
-        class: {type: Schema.Types.ObjectId, ref: 'Class'}
+                required: true,
+                default: 'guest'},
+        class: [{type: Schema.Types.ObjectId, ref: 'Class'}]
     })
 
   UserSchema.pre('save', function(next){

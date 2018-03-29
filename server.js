@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var passport = require('passport');
 var socialLogin = require('./app/passport/passport.js')(app, passport);
+// var autoIncrement = require('mongoose-auto-increment');
 
 //middleware
 app.use(logger('dev'));
@@ -15,6 +16,7 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static(__dirname + '/public'));
 app.use('/api',routes);
+
 
 mongoose.connect('mongodb://127.0.0.1:27017/usermgmt', function(err){
     if(err){

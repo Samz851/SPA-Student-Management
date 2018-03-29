@@ -7,17 +7,17 @@
                     <a href="#"><span class="glyphicon glyphicon-chevron-down"></span> Administrative Services </a>
                 </li>
                     <ul class="sub-menu collapse" id="admin-services">
-                        <li class="active"><a href="/newcourse">Register New Course</a></li>
-                        <li><a href="#">Enroll Student</a></li>
+                        <li class="active"><a ui-sref="app.dashboard.addnewclass">Add New Course</a></li>
+                        <li><a ui-sref="app.dashboard.enrollstudents">Enroll Student</a></li>
+                        <li><a ui-sref="app.dashboard.addnewstudent">Register Student</a></li>
                         <li><a href="#">Register Instructor</a></li>
                     </ul>
-                <li data-toggle="collapse" data-target="#service" class="collapsed">
-                    <a href="#"><span class="glyphicon glyphicon-stats"></span> Services </a>
+                <li data-toggle="collapse" data-target="#academic-service" class="collapsed">
+                    <a href="#"><span class="glyphicon glyphicon-stats"></span> Academic Services </a>
                 </li>  
-                <ul class="sub-menu collapse" id="service">
-                    <li>New Service 1</li>
-                    <li>New Service 2</li>
-                    <li>New Service 3</li>
+                <ul class="sub-menu collapse" id="academic-service">
+                    <li><a ui-sref="app.dashboard.updtstudentrec">Update Student Record</a></li>
+                    <li><a >Edit Courses</a></li>
                 </ul>
                 <li data-toggle="collapse" data-target="#new" class="collapsed">
                     <a href="#"><span class="glyphicon glyphicon-stats"></span> New </a>
@@ -35,8 +35,6 @@
             </ul>
         </div>
     </div>
-
-
     <div id="dash-content" class="panel panel-info text-center">
         <div class="page-header">
             <h1 style="color:black">Hello {{logUsername}}</h1>
@@ -46,56 +44,6 @@
             <div class="col-md-3 "></div>
             <div class="col-md-3 float-right"></div>
         </div>
-        <div class="row data-tables text-center">
-            <h2>Top 3 Students</h2>
-                <table class="table table-dark table-hover">
-                        <thead>
-                          <tr>
-                            <th>Rank</th>
-                            <th>Student Name</th>
-                            <th>Class</th>
-                            <th>Final Score</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>#1</td>
-                            <td>John</td>
-                            <td>Web Development</td>
-                            <td>98%</td>
-                          </tr>
-                          <tr>
-                            <td>#2</td>
-                            <td>Mary</td>
-                            <td>Network Administration</td>
-                            <td>96%</td>
-                          </tr>
-                          <tr>
-                            <td>#3</td>
-                            <td>July</td>
-                            <td>Web Development</td>
-                            <td>95%</td>
-                          </tr>
-                        </tbody>
-                      </table>
-        </div>
-       
-        <div class="container" ng-controller="studentCtrl as student">
-            <table>
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td colspan="6">Scores</td>
-                    </tr>
-                </thead>
-                <tbody ng-repeat=" x in student.students">
-                    <td>{{ x.name }}</td>
-                    <td ng-repeat =" y in x.scores">{{ y.type }} : {{ y.score | number:2 }}</td>
-                    <td><button type="button" ng-click="student.addToClass(x.name, logUsername)"></button></td>
-                </tbody>
-            </table>
-            <button type="button" ng-click="student.fetchStudents()">Fetch</button>
-            <p>{{ student.show }}</p>
-        </div>
+        <div ui-view="dashview"></div>
     </div>
 </div>

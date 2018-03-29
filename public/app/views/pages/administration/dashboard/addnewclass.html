@@ -1,0 +1,27 @@
+<div class="page-header">
+    <h3>Add New Class</h3>
+</div>
+<form name="newclass" id="new-class-form" ng-submit="class.addNewClass(class.classData)" novalidate>
+    <div class="form-group row">
+            <label for="CourseCode" class="col-form-label col-md-4">Course Code </label>
+            <input type="text" class="form-control col" name="CourseCode" placeholder="Course Code" ng-model="class.classData.courseCode" required >
+    </div>
+    <div class="form-group row">
+        <label for="CourseTitle" class="col-form-label col-md-4">Course Title</label>
+        <input type="text" class="form-control col" name="CourseTitle" placeholder="Course Title" ng-model="class.classData.courseTitle" required>
+    </div>
+    <div class="form-group row">
+        <label for="CourseDesc" class="col-form-label col-md-4">Course Description</label>
+        <textarea class="form-control col" rows="5" ng-model="class.classData.courseDesc" required></textarea>
+    </div>
+    <div class="form-group row">
+        <label for="datePicker" class="col-form-label col-md-4">Start Date</label>
+            <md-datepicker ng-model="class.classData.courseStart" class="input-group col"></md-datepicker>
+    </div>
+    <div class="form-group row">
+        <label for="numberPicker" class="col-form-label col-md-4">Course Duration <small>(IN WEEKS)</small></label>
+        <input class="form-control col" type="number" id="numberPicker" min="1" max="13" ng-model="class.classData.courseDuration">
+    </div>
+    <button type="submit" class="button btn-primary" ng-disabled="newclass.$invalid">Submit</button>
+    <div>{{ class.message }}</div>
+</form>
