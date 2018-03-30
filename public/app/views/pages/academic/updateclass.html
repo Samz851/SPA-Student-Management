@@ -1,0 +1,39 @@
+<div class="page-header">
+    <h3>Edit Courses</h3>
+</div>
+<div class="form-group row">
+    <label for="course-code" class="col-form-label col-md-2">Course Code: </label>
+    <input type="text" class="form-control col" name="course-code" placeholder="AAA-000" ng-model="updtClassCtrl.code" required>
+    <button type="button" class="button btn-primary form-control col" ng-click="updtClassCtrl.fetchClass(updtClassCtrl.code)">Fetch Course Record</button>
+</div>
+<form name="courseupdate-info" id="courseupdate-info"></form>
+<table class = "table table-hover" style="max-width:90%">
+    <thead>
+        <td colspan="2">Course Code</td>
+        <td colspan="3">Course Title</td>
+        <td colspan="3">Course Start Date</td>
+        <td colspan="1">Course Duration</td>
+        <td colspan="5">Course Details</td>
+        <td>Edit</td>
+    </thead>
+    <tbody ng-if="updtClassCtrl.card">
+        <tr>
+            <td colspan="2">{{ updtClassCtrl.card.classCode }}</td>
+            <td colspan="3">{{ updtClassCtrl.card.className }}</td>
+            <td colspan="3"><input name="card-startdate" type="date" ng-model="updtClassCtrl.card.classStart" readonly ></td>
+            <td colspan="1">{{ updtClassCtrl.card.classDuration }}</td>
+            <td colspan="5">{{ updtClassCtrl.card.classDesc }}</td>
+            <td><button class="button btn-info" type="button">Edit</button></td>
+        </tr>
+        <tr id="editField">
+            <td colspan="2"><input form="courseupdate-info" name="card-code" type="text" ng-model="updtClassCtrl.card.classCode"></td>
+            <td colspan="3"><input form="courseupdate-info" name="card-title" type="text" ng-model="updtClassCtrl.card.className"></td>
+            <td colspan="3"><input form="courseupdate-info" name="card-startdate" type="date" ng-model="updtClassCtrl.card.classStart"></td>
+            <td colspan="1"><input form="courseupdate-info" name="card-duration" type="number" ng-model="updtClassCtrl.card.classDuration"></td>
+            <td colspan="5"><input form="courseupdate-info" name="card-detailse" type="text" ng-model="updtClassCtrl.card.classDesc"></td>
+            <td><button class="button btn-info" type="button" ng-click="updtClassCtrl.updateClassRec(updtClassCtrl.card)">Submit</button></td>
+        </tr>
+    </tbody>
+
+</table>
+

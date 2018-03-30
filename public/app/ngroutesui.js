@@ -199,6 +199,26 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService'])
 					}
 				}
 			})
+			.state('app.dashboard.updatecourse', {
+				url: '/dashboard/updatecourse',
+				views: {
+					"dashview": {
+						templateUrl: 'app/views/pages/academic/updateclass.html',
+						controller: 'classCtrl',
+						controllerAs: 'updtClassCtrl'
+					}
+				}
+			})
+			.state('app.dashboard.marks', {
+				url: '/dashboard/marks',
+				views: {
+					"dashview": {
+						templateUrl: 'app/views/pages/academic/marks.html',
+						controller: 'classCtrl',
+						controllerAs: 'marksCtrl'
+					}
+				}
+			})
 		.state('app.privacy', {
 			url: '/privacy',
 			views: {
