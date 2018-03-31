@@ -9,7 +9,9 @@ angular.module('edugate', ['edugateRoutesUI',
                                 'userController',
                                 'authTokenFactory',
                                 'classcontroller',
-                                'classSrv'
+                                'classSrv',
+                                'dashboardcontroller',
+                                'chart.js'
                                 ])
 .config(function($httpProvider){
     $httpProvider.interceptors.push('authInterceptors');

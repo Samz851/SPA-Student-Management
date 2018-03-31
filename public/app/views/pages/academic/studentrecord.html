@@ -13,6 +13,7 @@
         <td colspan="2">Student Name</td>
         <td colspan="2">Student Email</td>
         <td colspan="5">Classes Enrolled</td>
+        <td colspan="2">Final Grade</td>
         <td>Edit</td>
     </thead>
     <tbody>
@@ -29,6 +30,7 @@
                     </tr></table></td>
                 </tr>
             </table></td>
+            <td>{{ academicStd.stdFinal }}</td>
             <td><button class="button btn-info" type="button" ng-click="academicStd.enableEdit()">Edit</button><button class="button btn-warning" type="button" ng-click="academicStd.updateRecord(academicStd.studentID, academicStd.studentName, academicStd.studentEmail, academicStd.academicCard)"></button></td>
         </tr>
     </tbody>

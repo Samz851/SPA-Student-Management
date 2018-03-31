@@ -9,7 +9,7 @@ angular.module('studentController', ['studentService'])
             if(data.data.success){
                 app.students = data.data.student;
             } else {
-                console.log("could not load student module:\n"+err)
+                //handle error
             }
         })
     }
@@ -17,27 +17,27 @@ angular.module('studentController', ['studentService'])
         if(studentData){
             studentFactory.addNewStudent(studentData).then(function(data){
                 if(data.data.success){
-                    console.log("new student added Successfully");
+                    // Data loaded
                 } else{
-                    console.log("could not add new student")
+                    // handle error
                 }
             })
         }
     }
     this.fetchStudentRecord = function(student){
-        console.log(student)
         if(student){
             studentFactory.getStudentRec(student).then(function(data){
                 if(data.data.success){
-                    console.log(JSON.stringify(data.data));
                     app.stdRec = data.data.student;
                     app.studentID = app.stdRec.studentid;
                     app.studentName = app.stdRec.name;
                     app.studentEmail = app.stdRec.email;
                     app.academicCard = app.stdRec.academic;
                     app.studentScores = app.stdRec.academic.score;
+                    app.stdFinal = data.data.final;
+                    console.log(app.academicCard)
                 }else{
-                    console.log("failed getting student record");
+                    // handle error
                 }
             })
         }

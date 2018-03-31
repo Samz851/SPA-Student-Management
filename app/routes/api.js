@@ -46,7 +46,7 @@ module.exports = function(router){
                             res.json({success: false, message: 'Email Already Exist '});
                         }
                     } else {
-                        res.json({success:false, message: err})}
+                        res.json({success:false, message: err});}
                 } else {
                     res.json({success: true, message: 'User Record Created Successfully'});
                     eTemplate.activationEmail(user.temptoken, user.email);
@@ -164,7 +164,7 @@ module.exports = function(router){
                     user.save(function(err){
                         if(err) throw err;
                         res.json({success: true, message: 'email tokens match and reset was successful'});
-                    })
+                    });
                 }
             });
 
@@ -196,7 +196,7 @@ module.exports = function(router){
                         name: name,
                         role: user.role,
                         date: date
-                      }, secret, { expiresIn: '1600s' });
+                      }, secret, { expiresIn: '1h' });
                        res.json({success: true, message: 'You are logged in', token: token, username: user.username, role : user.role});
                    }
                 }
@@ -315,7 +315,7 @@ module.exports = function(router){
         {type: 'qz', score: 0.00},
         {type: 'md', score: 0.00},
         {type: 'fn', score: 0.00}]
-    }
+    };
     var enrolledstudent = {};
        console.log('the request body is: '+req.body.studentid);
        if(!req.body){
@@ -336,7 +336,7 @@ module.exports = function(router){
                     
                 });
            });
-           function pushStudent(student){
+           var pushStudent = function (student){
                 Class.findById(req.body.coursecode).select('enrolled').exec(function(err, course){
                console.log('student reference to be pushed is: '+ JSON.stringify(enrolledstudent));
                course.enrolled.push(enrolledstudent._id);
@@ -345,19 +345,24 @@ module.exports = function(router){
                });
            });
 
-           }
+           };
            
         }
    });
 
    //Fetch Student Records
    router.get('/adminapi/getstdrec/:studentid', function(req, res, err){
+       
        console.log('req params is: '+req.params.studentid)
        Student.findOne({studentid: req.params.studentid}).
        populate('academic.class').
        exec(function(err, student){
            if(student){
-               res.json({success: true, student: student})
+               var grade;
+                student.finalGrade().then(function(data){
+                    grade = data;
+                    res.json({success: true, student: student, final: grade})
+                })
            }else{
                res.json({success: false, message: 'No student found with this #ID'})
            }
@@ -433,6 +438,12 @@ module.exports = function(router){
            });
        });
    });
+//    //Aggregate Classrooms
+//    router.get('/adminapi/classrooms', function(req, res, err){
+//         Class.aggregate([
+//             {$unwind: 'enrolled'}
+//         ])
+//    })
 
 
     return router;

@@ -42,12 +42,10 @@ angular.module('maincontroller',['authService'])
                 var timeStamp = Math.floor(Date.now()/1000);
                 var difference = expTime - timeStamp;
                 if(difference > 30 ){
-                    // console.log(difference + " : "+Auth.isLoggedIn() + " : " +$scope.logUsername);
                 }
                 else if(difference  > 0 && difference <= 30 ) {
                     app.triggerModal('session');
                     app.loading = false;
-                    // console.log('Token Expired');
                 } else {
                     app.loading = false;
                     $scope.logUsername = null;
@@ -70,11 +68,10 @@ angular.module('maincontroller',['authService'])
         if(Authenticate.data.success){
             $scope.logUsername = Auth.identity.username;
         } else {
-            //
+            // handle error
         }
     }
-    app.getName();
-        //Function to renew user credentials on state change -- DEPRECATED
+    app.getName(); //Function to renew user credentials on state change -- DEPRECATED
     
     this.fb = function(){
         $window.location = $window.location.protocol + '//' + $window.location.host + '/auth/facebook';
@@ -90,7 +87,6 @@ angular.module('maincontroller',['authService'])
                 app.successMsg = data.data.message + "...Redirecting, please wait";
                 $scope.logUsername = data.data.username;
                 app.logUserRole = data.data.role;
-                console.log('login username is: ' + data.data.role)
                 $state.reload() // relaod parent state
                 //Timeout redirecting to homepage
                 $timeout(function(){
@@ -198,11 +194,3 @@ angular.module('maincontroller',['authService'])
 
     
 })
-// .run('$transitions','$state', function($transitions){
-//     $transitions.onSuccess({}, function(transition){
-//         console.log(
-//             "successful Transition from " +transition.from().name+
-//             "to" +transition.to().name
-//         )
-//     })
-// })

@@ -41,8 +41,25 @@
             <h1 style="color:black">Hello {{logUsername}}</h1>
         </div>
         <div class="row charts text-center">
-            <div class="col-md-3 float-left"></div>
-            <div class="col-md-3 "></div>
+            <div class="col-md-3 float-left">
+                <table>
+                    <thead>
+                        <td>Code</td>
+                        <td>Title</td>
+                        <td>Students</td>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="classroom in dash.aggClassrooms">
+                            <td>{{ classroom.code }}</td>
+                            <td>{{ classroom.name }}</td>
+                            <td>{{ classroom.enrolled }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="second-chart-parent" class="col-md-3" data-ng-init="dash.loadCharts()">
+                <canvas id="classrooms-chart" class="chart chart-doughnut" chart-data="dash.data" chart-labels="dash.labels" data-ng-init="dash.fitChartContainer()"></canvas> 
+            </div>
             <div class="col-md-3 float-right"></div>
         </div>
         <div ui-view="dashview"></div>

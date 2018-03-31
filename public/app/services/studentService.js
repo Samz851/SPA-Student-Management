@@ -13,9 +13,6 @@ angular.module('studentService',[])
         return $http.get('/api/adminapi/getstdrec/'+student)
     }
     Student.updateRecord = function(record){
-
-        console.log('StudentFactory record is: '+JSON.stringify(record))
-
         return $http.put('/api/adminapi/updatestdrec', record)
     }
     return Student;

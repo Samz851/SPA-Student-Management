@@ -1,4 +1,4 @@
-var app = angular.module('edugateRoutesUI', ['ui.router', 'authService'])
+var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classSrv'])
 
 .config(['$stateProvider','$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider, Auth, $timeout, $q, $state, $transitions){
 
@@ -6,54 +6,32 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService'])
 	$urlRouterProvider.otherwise("/");
 	var hasToken = false;
 	var userRole = 'guest';
+
 	var Authenticate =	['Auth','$q',
-				function(Auth, $q) { 
-					var deferred = $q.defer();
-						Auth.getUser().then(function(user){
-							if(user){ // Promise resolved
-								if(user.data.success){ //Success
-									// console.log('user object hasToken('+hasToken+' Role: '+userRole+'): '+JSON.stringify(user))
-									hasToken = true;
-									userRole = user.data.decoded.role;
-									deferred.resolve(user);
-								} else{ //Fail
-									// console.log('user object hasToken('+hasToken+' Role: '+userRole+'): '+JSON.stringify(user))
-									hasToken = false;
-									userRole = "guest";
-									deferred.resolve(user);
-								}
-							} else { // Promise not Resolved Yet
-								deferred.resolve(console.log('Promise not Resolved yet'))
-							}
-							
-						}).catch(function(){
-							console.log('NOT FETCHED YET user object is: fuck')
-							deferred.reject(console.log('user'))
-	
-						});
-						return deferred.promise
+		function(Auth, $q) { 
+			var deferred = $q.defer();
+				Auth.getUser().then(function(user){
+					if(user){ // Promise resolved
+						if(user.data.success){ //Success
+							hasToken = true;
+							userRole = user.data.decoded.role;
+							deferred.resolve(user);
+						} else{ //Fail
+							hasToken = false;
+							userRole = "guest";
+							deferred.resolve(user);
+						}
+					} else { // Promise not Resolved Yet
+						deferred.resolve(console.log('Promise not Resolved yet'))
+					}
 					
-				}
-			];
-	// var filterAcess = ['Auth','$state','$transitions','$q', // create function that checks route
-	// 	function(Auth, $state, $transitions, $q){
-	// 		var deferred = $q.defer();
-	// 		if(!hasToken){
-
-	// 			deferred.resolve($state.go('app.login'));
-	// 		} else {	// User is Logged in
-	// 				Authenticate;
-	// 				console.log('userRole: '+userRole)
-	// 				console.log('data.roles for state '+$transitions.to().name+' is: '+$transitions.to().data.roles)
-	// 				var stateRoles = $transitions.to().data.roles;
-	// 			if(!stateRoles.includes(userRole)){
-
-	// 				deferred.resolve($state.go('app.accessdenied'));
-	// 			}
-	// 		}
-	// 		return deferred;
-	// 	}
-	// ]
+				}).catch(function(){
+					deferred.reject(console.log('user'))
+				});
+			return deferred.promise
+			
+		}
+	];
 
 	$stateProvider
 
@@ -142,14 +120,19 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService'])
 			views: {
 				"main": {
 					templateUrl: 'app/views/pages/administration/dashboard.html',
+					controller: 'dashCtrl',
+					controllerAs: 'dash'
 				},
+			},
+			resolve: {
+				Authenticate: Authenticate,
+				logging: function(){
+					return 'Resolve Works!'
+				}
 			},
 			data: {
 				roles: ['admin', 'instructor'],
 				private: true
-			},
-			resolve: {
-				Authenticate: Authenticate,
 			}
 		})
 			.state('app.dashboard.addnewclass', {
@@ -323,20 +306,8 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService'])
 		$transitions.onSuccess({}, function(transition){
 			var deferred = $q.defer();
 			if(!Auth.isLoggedIn() && transition.to().data.private ){
-				console.log(
-					"successful Transition from " +transition.from().name+
-					" to " +transition.to().name
-					
-				)
-
 				deferred.resolve($state.go('app.login'));
 			} else {	// User is Logged in
-				console.log(
-					"successful Transition from " +transition.from().name+
-					" to " +transition.to().name
-					
-				)
-					console.log('data.roles for state '+transition.to().name+' is: '+transition.to().data.roles)
 					var stateRoles = transition.to().data.roles;
 					var userRole = Auth.identity.role
 				if(!stateRoles.includes(userRole)){
