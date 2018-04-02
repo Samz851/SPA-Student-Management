@@ -18,20 +18,23 @@
     </thead>
     <tbody>
         <tr>
-            <td colspan="1">{{ academicStd.studentID }}</td>
-            <td colspan="2"><input form="studentRecForm" name="student-name" type="text" readonly ng-model="academicStd.studentName" ></td>
-            <td colspan="2"><input form="studentRecForm" name="student-email" type="text" ng-model="academicStd.studentEmail" readonly ></td>
+            <td colspan="1">{{ academicStd.displayCard.ID }}</td>
+            <td colspan="2"><input form="studentRecForm" name="student-name" type="text" readonly ng-model="academicStd.displayCard.name" ></td>
+            <td colspan="2"><input form="studentRecForm" name="student-email" type="text" ng-model="academicStd.displayCard.email" readonly ></td>
             <td colspan="5"><table>
-                <tr ng-repeat="card in academicStd.academicCard track by $index">
-                    <td><input form="studentRecForm" name="student-class" type="text" ng-model="card.class.classCode" readonly></td>
-                    <td><table id="table-scores"><tr ng-repeat="score in card.score track by $index">
+                <tr ng-repeat="class in academicStd.displayCard.classes track by $index">
+                    <td><input form="studentRecForm" name="student-class" type="text" ng-model="class.course" readonly></td>
+                    <td><table id="table-scores"><tr ng-repeat="score in class.scores track by $index">
                         <td><input form="studentRecForm" name="student-score-type" type="text" ng-model="score.type" readonly></td>
                         <td><input form="studentRecForm" name="student-score-score" type="text" ng-model="score.score" readonly></td>
                     </tr></table></td>
+                    <td>{{ class.final }}</td>
+                    <td><button class="button btn-warning" type="button" ng-click="academicStd.updateRecord(academicStd.displayCard.ID, academicStd.displayCard.name, academicStd.displayCard.email, class)"></button></td>
                 </tr>
             </table></td>
-            <td>{{ academicStd.stdFinal }}</td>
-            <td><button class="button btn-info" type="button" ng-click="academicStd.enableEdit()">Edit</button><button class="button btn-warning" type="button" ng-click="academicStd.updateRecord(academicStd.studentID, academicStd.studentName, academicStd.studentEmail, academicStd.academicCard)"></button></td>
+            <td><button class="button btn-info" type="button" ng-click="academicStd.enableEdit()">Edit</button></td>
+            
+            
         </tr>
     </tbody>
 

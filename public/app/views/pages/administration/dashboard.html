@@ -42,6 +42,7 @@
         </div>
         <div class="row charts text-center">
             <div class="col-md-3 float-left">
+                    <!-- <canvas  class="chart chart-doughnut" chart-data="dash.aggClassrooms" chart-labels="dash.aggClassrooms.code" data-ng-init="dash.fitChartContainer()"></canvas>  -->
                 <table>
                     <thead>
                         <td>Code</td>
@@ -60,7 +61,11 @@
             <div id="second-chart-parent" class="col-md-3" data-ng-init="dash.loadCharts()">
                 <canvas id="classrooms-chart" class="chart chart-doughnut" chart-data="dash.data" chart-labels="dash.labels" data-ng-init="dash.fitChartContainer()"></canvas> 
             </div>
-            <div class="col-md-3 float-right"></div>
+            <div class="col-md-3 float-right">
+                <table>
+                    <tr><td><strong>School Average Score: {{ dash.ave | number:2 }}</strong></td></tr>
+                    <tr ng-repeat="student in dash.studentMarks|limitTo:4"><td>{{ student.name }}</td><td>{{ student.final }}</td></tr></table>
+            </div>
         </div>
         <div ui-view="dashview"></div>
     </div>

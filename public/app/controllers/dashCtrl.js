@@ -2,30 +2,55 @@ angular.module('dashboardcontroller',['classSrv', 'chart.js','edugateRoutesUI'])
 
 .controller('dashCtrl',['classFactory', '$q', 'logging', '$timeout', function(classFactory, $q, logging, $timeout){
     var app=this;
-    console.log(logging)
+
 
     app.aggClassrooms = []
+    var classesObj;
     app.data=[];
     app.labels=[];
-    console.log(app.aggClassrooms)
+
+    this.rankStudents = function(){
+        classFactory.rankStudents().then(function(data){
+            // console.log(data.data.marks);
+            app.studentMarks = data.data.marks
+            function compare(a, b){
+                let comparison = 0;
+              
+                if (a.final < b.final) {
+                  comparison = 1;
+                } else if (b.final < a.final) {
+                  comparison = -1;
+                }
+              
+                return comparison;
+              }
+              app.studentMarks.sort(compare)
+              totalscore = 0;
+              for(i=0; i<app.studentMarks.length; i++){
+                  totalscore += app.studentMarks[i].final;
+
+              }
+              console.log( 'totalScore = '+ totalscore)
+              app.ave = totalscore / app.studentMarks.length
+              console.log('average score = ' + app.ave)
+              
+        })
+    }
+    app.rankStudents();
 
     this.studentsInClassroom = function(){
         classFactory.fetchClasses().then(function(data){
-            // console.log('fecthed classes are: ' + JSON.stringify(data.data))
-
             for(var index of data.data.course){
-                // console.log(index.classCode)
-                // console.log(index.enrolled.length)
                 var classroom ={};
                 classroom.code = index.classCode;
                 classroom.name = index.className;
                 classroom.enrolled = index.enrolled.length;
                 app.aggClassrooms.push(classroom);
             }
-            console.log(app.aggClassrooms)
         })
     }
     app.studentsInClassroom();
+    console.log(app.aggClassrooms)
 
     this.fitChartContainer = function(){
     //    var canvas =  $('#classrooms-chart');
@@ -40,8 +65,6 @@ angular.module('dashboardcontroller',['classSrv', 'chart.js','edugateRoutesUI'])
                 app.data.push(index.enrolled);
                 app.labels.push(index.name);
             }
-            console.log('dataset is: '+app.data)
-            console.log('labelsset is: '+app.labels)
         },500)
         
     }

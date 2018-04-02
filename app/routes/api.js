@@ -247,9 +247,9 @@ module.exports = function(router){
     ////////////DASHBOARD APIS//////////
      //Fetch All Classes
     router.get('/adminapi/classlist', function(req, res){
-        Class.find({}).exec(function(err, course){
+        Class.find({}).populate('enrolled').exec(function(err, course){
             if(err) {
-                console.log(err);
+                //Handle Error
             } else {
                 res.json({success:true, course});
             }
@@ -259,7 +259,7 @@ module.exports = function(router){
      //Add New Class
      router.post('/adminapi/addnewclass', function(req, res, err){
          if(!req.body){
-             console.log("the error is:\n"+err);
+             //handle error
              res.json({ success: false, message: 'Could not add'});
          } else {
             var newclass = new Class();
@@ -273,7 +273,7 @@ module.exports = function(router){
             } else {
                 newclass.save(function(err){
                     if(err) {
-                        console.log(err);
+                        // handle error
                     } else {
                         res.json({ success: true, message: 'Class added'});
                     }
@@ -285,7 +285,7 @@ module.exports = function(router){
     //Add New Student
     router.post('/adminapi/addnewstudent', function(req, res, err){
         if(!req.body){
-            console.log("the error is:\n"+err);
+            //handle error
             res.json({ success: false, message: 'Could not add'});
         } else {
            var student = new Student();
@@ -296,7 +296,7 @@ module.exports = function(router){
            } else {
                student.save(function(err){
                    if(err) {
-                       console.log(err);
+                       // handle error
                    } else {
                        res.json({ success: true, message: 'student added'});
                    }
@@ -317,31 +317,29 @@ module.exports = function(router){
         {type: 'fn', score: 0.00}]
     };
     var enrolledstudent = {};
-       console.log('the request body is: '+req.body.studentid);
        if(!req.body){
-           console.log("The error is: \n"+err);
+           // handle error
            res.json({ success: false, message: 'Failed to enroll'});
        } else {
             
             
-            Student.findOne({studentid: studentID}).select('_id').exec(function(err, student){
+            Student.findOne({studentid: studentID}).select('_id academic').exec(function(err, student){
                 
                 // student.academic.class = studentcourse;
                 enrolledstudent = student;
-                student.academic =[obj];
+                classList = student.academic;
+                classList.push(obj);
                 pushStudent(student);
                 student.save(function(err){
-                    err ? console.log(err) : console.log('success saving to student');
-                    console.log('sudent ID to be pushed is:' + student._id);
+                    // handle error
                     
                 });
            });
            var pushStudent = function (student){
                 Class.findById(req.body.coursecode).select('enrolled').exec(function(err, course){
-               console.log('student reference to be pushed is: '+ JSON.stringify(enrolledstudent));
                course.enrolled.push(enrolledstudent._id);
                course.save(function(err){
-                   err ? console.log(err) : console.log('success saving to class');
+                   // handle error
                });
            });
 
@@ -352,51 +350,60 @@ module.exports = function(router){
 
    //Fetch Student Records
    router.get('/adminapi/getstdrec/:studentid', function(req, res, err){
-       
-       console.log('req params is: '+req.params.studentid)
        Student.findOne({studentid: req.params.studentid}).
        populate('academic.class').
        exec(function(err, student){
            if(student){
-               var grade;
+               if(student.academic.length > 0) {
+                var grade;
                 student.finalGrade().then(function(data){
-                    grade = data;
-                    res.json({success: true, student: student, final: grade})
+                    grades = data;
+                    res.json({success: true, student: student, final: grades})
                 })
+               } else if(student.academic.length == 0) {
+                    res.json({success: false, message: 'Student not enrolled in any class'})
+               }
            }else{
                res.json({success: false, message: 'No student found with this #ID'})
            }
        })
    })
+
    //Update student Record
    router.put('/adminapi/updatestdrec', function(req, res, err){
-    console.log('refence req.body --- ' + JSON.stringify(req.body))
-       console.log('refence req.body --- ' + JSON.stringify(req.body.courses[0]._id))
        let n = false;
        let e = false;
-       let reqCourseID = req.body.courses[0]._id;
        let scoreCorrections = [];
+       console.log(req.body)
+        // for(let i = 0; i < req.body.courses.length; i++){
+        //     courseID = req.body.courses[i]._id;
+        //     scoreCorrections.push({courseID: courseID, corrections: []});
+        //     for( var score of req.body.courses[i].score){
+        //        scoreCorrections[i].corrections.push({scoreID: score._id, correction: score.score})
+        //     }
+            
+        // };
+        // console.log(scoreCorrections)
 
-       for(var index of req.body.courses){
-           console.log('course is: '+ JSON.stringify(index))
-           for(var score of index.score){
-               console.log('score is: ' + JSON.stringify(score));
-               scoreCorrections.push({scoreID: score._id,
-                                        correction: score.score})
-           }
-       }
         Student.findOne({'studentid': req.body.ID}).exec(function(err, student){
             if(student){
-                for( scoreRec of scoreCorrections){
-                    student.academic.id(reqCourseID).score.id(scoreRec.scoreID).set({'score': scoreRec.correction})
-                    console.log('The Changes for course number ' + reqCourseID + ' are: \n Record# '+scoreRec.scoreID+ ' Change to: ' +scoreRec.correction )
+                for( i=0; i < req.body.courses.length; i++){
+                    for(c=0; c < student.academic.length; c++){
+                        for(s=0; s < student.academic[c].score.length; s++){
+                            console.log('1: '+student.academic[c].score[s]._id)
+                            console.log('2: '+req.body.courses[i]._id)
+                            if(student.academic[c].score[s]._id == req.body.courses[i]._id){
+                                student.academic[c].score[s].score = req.body.courses[i].score
+                            }
+                        }
+                    }
                 }
-                student.save(function(err){
-                    err ? console.log('error saving: \n' + JSON.stringify(err)) : console.log('success saving')
-                })
             }
+            student.save(function(err){
+                            console.log(err)
+                        })
         })
-   })
+    })
    //Get Class Card
    router.get('/adminapi/getclass/:code', function(req, res, err){
        Class.findOne({'classCode' : req.params.code}).populate('enrolled').select('classCode className classDesc classStart classDuration enrolled.name enrolled.academic.score.type enrolled.academic.score.score').exec(function(err, card){
@@ -417,7 +424,7 @@ module.exports = function(router){
            course.classStart = req.body.classStart
            course.classDuration = req.body.classDuration
            course.save(function(err){
-               err ? console.log('Failed to update class') : console.log('Success updating class')
+            // handle error
            });
        });
    });
@@ -426,24 +433,43 @@ module.exports = function(router){
    router.post('/adminapi/submitmark', function(req, res, err){
        Student.findOne({name: req.body.name}).populate('academic academic.class').exec(function(err, student){
             for ( var index of student.academic) {
-                console.log(index.class._id)
                 if(index.class._id == req.body.classroom){
                     student.academic.id(index._id).score.push({type: req.body.type, score: req.body.mark})
                 } else {
-                    console.log(index.class._id + ' : ' +req.body.classroom)
+                    // handle error
                 }
             }
            student.save(function(err){
-               err ? console.log('Failed to push marks') : console.log('Marks Recorded Successfully')
+               // handle error
            });
        });
    });
-//    //Aggregate Classrooms
-//    router.get('/adminapi/classrooms', function(req, res, err){
-//         Class.aggregate([
-//             {$unwind: 'enrolled'}
-//         ])
-//    })
+
+   //Get all marks
+   router.get('/adminapi/allmarks', function(req, res, err){
+        let marks =[];
+        Student.find({}).
+        select('name academic').
+        populate('academic.class').
+        exec(function(err, students){
+            // console.log(students)
+            for( student of students){
+                student.finalGrade().then(function(data){
+                    for(var i = 0; i < data.length; i++){
+                        grade = {name: data[i].name, final: data[i].final}
+                    marks.push(grade)
+                    // console.log(grade)
+                    }
+                })
+                
+                // console.log(marks)
+            }
+            setTimeout(function(){
+                res.json({success: true, marks: marks})
+            }, 400)
+        })
+    })
+
 
 
     return router;

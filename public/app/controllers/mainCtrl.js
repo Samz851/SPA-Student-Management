@@ -54,7 +54,7 @@ angular.module('maincontroller',['authService'])
                     $timeout(function(){
                         app.errorMsg = "";
                         $('#session').modal('hide');
-                        $state.go('/', null, {inherit: false});
+                        $state.go('app.home', null, {inherit: false});
                     }, 2000);
                 }
                 

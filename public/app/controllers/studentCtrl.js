@@ -28,14 +28,21 @@ angular.module('studentController', ['studentService'])
         if(student){
             studentFactory.getStudentRec(student).then(function(data){
                 if(data.data.success){
-                    app.stdRec = data.data.student;
-                    app.studentID = app.stdRec.studentid;
-                    app.studentName = app.stdRec.name;
-                    app.studentEmail = app.stdRec.email;
-                    app.academicCard = app.stdRec.academic;
-                    app.studentScores = app.stdRec.academic.score;
-                    app.stdFinal = data.data.final;
-                    console.log(app.academicCard)
+                    app.displayCard={};
+                    app.displayCard.classes =[]
+                    console.log(data.data)
+                    app.displayCard.ID = data.data.student.studentid;
+                    app.displayCard.name = data.data.student.name;
+                    app.displayCard.email = data.data.student.email;
+                    for(let i=0; i < data.data.final.length; i++){
+                        for(let n=0; n < data.data.student.academic.length; n++){
+                            if(data.data.student.academic[n]._id === data.data.final[i].courseID){
+                                classCard = {course: data.data.student.academic[n].class.classCode, final: data.data.final[i].final, scores: data.data.student.academic[n].score};
+                                app.displayCard.classes.push(classCard);
+                            }
+                        }
+                    }
+                    console.log(app.displayCard)
                 }else{
                     // handle error
                 }
@@ -48,14 +55,16 @@ angular.module('studentController', ['studentService'])
       })
     }
     this.updateRecord = function(studentID, studentName, studentEmail, card){
+        console.log(card)
         recObj = {}
         recObj.ID = studentID;
         recObj.name = studentName;
         recObj.email = studentEmail;
         recObj.courses = []
-        angular.forEach(card, function(value, key){
+        angular.forEach(card.scores, function(value, key){
             recObj.courses.unshift(value);
         })
+        console.log(recObj)
         studentFactory.updateRecord(recObj)
 
     }

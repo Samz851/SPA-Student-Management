@@ -20,8 +20,8 @@ angular.module('classSrv',[])
     classFactory.submitMark = function(scoreCard){
         return $http.post('/api/adminapi/submitmark', scoreCard)
     }
-    // classFactory.aggregateClassrooms = function(){
-    //     return $http.get('/api/adminapi/classrooms')
-    // }
+    classFactory.rankStudents = function(){
+        return $http.get('/api/adminapi/allmarks')
+    }
     return classFactory;
 })
