@@ -3,25 +3,25 @@
 </div>
 <div class="form-group row">
     <label for="studentID" class="col-form-label col-md-2">Student ID#</label>
-    <input type="text" class="form-control col" name="studentID" placeholder="" ng-model="academicStd.studentID" required >
+    <input type="text" id="fetch" class="form-control col" name="studentID" placeholder="" ng-model="academicStd.studentID" required >
     <button type="button" class="button btn-primary form-control col" ng-click="academicStd.fetchStudentRecord(academicStd.studentID)">Fetch Records</button>
 </div>
+<h5 style="display:block">{{ academicStd.updatesuccessMsg }}</h5>
 <form name="studentRecForm" id="studentRecForm"></form>
-<table class = "table table-hover" style="max-width:90%" id="student-record">
+<table class = "table table-hover custom-table" style="max-width:90%" id="student-record">
     <thead>
-        <td colspan="1">#ID</td>
-        <td colspan="2">Student Name</td>
-        <td colspan="2">Student Email</td>
-        <td colspan="5">Classes Enrolled</td>
-        <td colspan="2">Final Grade</td>
+        <td>#ID</td>
+        <td>Student Name</td>
+        <td>Student Email</td>
+        <td>Classes Enrolled</td>
         <td>Edit</td>
     </thead>
     <tbody>
         <tr>
-            <td colspan="1">{{ academicStd.displayCard.ID }}</td>
-            <td colspan="2"><input form="studentRecForm" name="student-name" type="text" readonly ng-model="academicStd.displayCard.name" ></td>
-            <td colspan="2"><input form="studentRecForm" name="student-email" type="text" ng-model="academicStd.displayCard.email" readonly ></td>
-            <td colspan="5"><table>
+            <td>{{ academicStd.displayCard.ID }}</td>
+            <td><input form="studentRecForm" name="student-name" type="text" readonly ng-model="academicStd.displayCard.name" ></td>
+            <td><input form="studentRecForm" name="student-email" type="text" ng-model="academicStd.displayCard.email" readonly ></td>
+            <td><table class="custom-table">
                 <tr ng-repeat="class in academicStd.displayCard.classes track by $index">
                     <td><input form="studentRecForm" name="student-class" type="text" ng-model="class.course" readonly></td>
                     <td><table id="table-scores"><tr ng-repeat="score in class.scores track by $index">
@@ -29,7 +29,7 @@
                         <td><input form="studentRecForm" name="student-score-score" type="text" ng-model="score.score" readonly></td>
                     </tr></table></td>
                     <td>{{ class.final }}</td>
-                    <td><button class="button btn-warning" type="button" ng-click="academicStd.updateRecord(academicStd.displayCard.ID, academicStd.displayCard.name, academicStd.displayCard.email, class)"></button></td>
+                    <td><button class="button btn-warning" type="button" ng-click="academicStd.updateRecord(academicStd.displayCard.ID, academicStd.displayCard.name, academicStd.displayCard.email, class)">Update</button></td>
                 </tr>
             </table></td>
             <td><button class="button btn-info" type="button" ng-click="academicStd.enableEdit()">Edit</button></td>

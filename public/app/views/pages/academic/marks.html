@@ -2,24 +2,25 @@
     <h3>Marks</h3>
 </div>
 <div data-ng-init="marksCtrl.loadClasses()">
-    <form>
+    <form class="form" ng-if="marksCtrl.classes" >
         <lable>Select Class</lable>
-        <select ng-model="code" ng-options="class.classCode for class in marksCtrl.classes track by class._id"><option value="class._id"></option></select>
-        <button type="submit" class="button btn-primary" ng-click="marksCtrl.getClassMarks(code)">Get Class</button>
+        <select ng-model="marksCtrl.selected" ng-options="class.classCode for class in marksCtrl.classes track by class._id"><option value="class._id"></option></select>
+        <button type="submit" class="button btn-primary" ng-click="marksCtrl.getClassMarks(marksCtrl.selected)">Get Class</button>
     </form>
+    <h5 style="display:block">{{ marksCtrl.marksMsg }}</h5>
 </div>
 <div>
-    <table>
+    <table class="custom-table">
         <thead>
-            <td>Student ID#</td>
+            <td ng-if-start="marksCtrl.classroom">Student</td>
             <td>Mark</td>
-            <td>Action</td>
+            <td ng-if-end>Action</td>
         </thead>
         <tbody>
             <tr ng-repeat="pupil in marksCtrl.classroom">
                 <td>{{ pupil.name }}</td>
                 <td><input name="score" type="text" ng-model="pupil.mark"><select ng-model="pupil.type"><option value="hw">Home Work</option><option value="qz">Quiz</option><option value="md">Mid-Term</option><option value="fn">Final Exam</option></select></td>
-                <td><button type="button" class="button btn-primary" ng-click="marksCtrl.submitMark(pupil.name, pupil.mark, pupil.type, code._id)">Submit</button></td>
+                <td><button type="button" class="button btn-primary" ng-click="marksCtrl.submitMark(pupil.name, pupil.mark, pupil.type, marksCtrl.selected)">Submit</button></td>
             </tr>
         </tbody>
     </table>

@@ -1,17 +1,31 @@
 angular.module('classcontroller',['classSrv'])
 
-.controller('classCtrl',['classFactory', '$q', function(classFactory, $q){
+.controller('classCtrl',['$state','classFactory', '$q', '$timeout', function($state, classFactory, $q, $timeout){
     var app=this;
+    app.allowEdit = false;
+    app.added = false;
 
+    //modal control //
+    this.triggerLoading = function(dom){
+            var id = '#'+dom;
+            $(id).modal('toggle')
+    }
+    
+    this.editable = function(){
+        app.allowEdit = true;
+        console.log(app.allowEdit)
+    }
+    
     this.addNewClass = function(classData){
         if(classData){
             classFactory.addClass(classData).then(function(err){
                 // handle error
+                $state.reload();
+
             })
         } else {
             // handle empty input
         }
-            this.message = "Button works"
     };
 
     this.fetchClasses = function(){
@@ -23,35 +37,60 @@ angular.module('classcontroller',['classSrv'])
             }
         })
     }
+    app.studentAdded;
+    app.toClass;
 
-    this.addtoClass = function(classid, studentid){
+    this.addtoClass = function(classid, studentid, classCode){
+        app.triggerLoading('loading');
         let enrollData = {
             coursecode: classid,
-            studentid: studentid
+            studentid: studentid,
+            classCode: classCode,
         }
         classFactory.addToClass(enrollData).then(function(err){
-            // handle response
+            app.studentAdded = enrollData.studentid;
+            app.toClass = enrollData.classCode;
+                $timeout(function(){
+                    $('#loading').modal('hide');
+                    $('#enrollment input').val('');
+                    app.added = true;
+                }, 1000)
+                
         })
         
     }
     // Update Course controller
     this.fetchClass = function(code) {
+        app.triggerLoading('loading');
         code = code.toUpperCase();
         classFactory.fetchClass(code).then(function(data){
-            if(data.data.success){
-                date = data.data.card.classStart;
-                app.card = data.data.card;
-                app.card.classStart = new Date(date);
-            } else {
-                app.errMsg = data.data.message;
-            }            
+            $timeout(function(){
+                if(data.data.success){
+                    $('#loading').modal('hide');
+                    app.code = '';
+                    date = data.data.card.classStart;
+                    app.card = data.data.card;
+                    app.card.classStart = new Date(date);
+                } else {
+                    $('#loading').modal('hide');
+                    app.errMsg = data.data.message;
+                }
+            },500)
+                        
         })
     }
     this.updateClassRec = function(update){
+        let rec = update
+        app.triggerLoading('loading');
         classFactory.updateClassRec(update).then(function(data){
-            if(data.data.success){
-            }else{
-            }
+            $timeout(function(){
+                if(data.data.success){
+                    app.allowEdit = false;
+                    $('#loading').modal('hide');
+                    app.updatesuccessMsg = data.data.message;
+                }else{ }
+            },500)
+            
         })
     }
 
@@ -68,20 +107,28 @@ angular.module('classcontroller',['classSrv'])
     this.getClassMarks = function(classroom){
         classFactory.fetchClass(classroom.classCode).then(function(data){
             if(data.data.success){
-                app.classroom = data.data.card.enrolled
+                console.log('should close modal')
+                app.classroom = data.data.card.enrolled;
             } else {
                 app.errMsg = data.data.message;
             }
         })
     }
     this.submitMark = function(name, mark, type, classroom){
+        app.triggerLoading('loading');
         scoreCard = {
-            classroom : classroom,
+            classroom : classroom._id,
             name: name,
             mark: mark,
             type: type
         }
         classFactory.submitMark(scoreCard).then(function(data){
+            if(data.data.success){
+                $('#loading').modal('hide');
+                app.marksMsg = data.data.message;
+            } else {
+                $('#loading').modal('hide');
+            }
         })
     }
     

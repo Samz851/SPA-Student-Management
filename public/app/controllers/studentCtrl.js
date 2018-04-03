@@ -1,8 +1,14 @@
 angular.module('studentController', ['studentService'])
 
-.controller('studentCtrl', function(studentFactory) {
+.controller('studentCtrl', ['studentFactory','$timeout', function(studentFactory, $timeout) {
     app = this;
     app.students = [];
+    app.registered = false;
+
+    this.triggerLoading = function(dom){
+        var id = '#'+dom;
+        $(id).modal('toggle')
+    }
 
     this.fetchStudents = function(){
         studentFactory.fetchStudents().then(function(data, err){
@@ -14,9 +20,16 @@ angular.module('studentController', ['studentService'])
         })
     }
     this.addNewStudent = function(studentData){
+        app.triggerLoading('loading');
         if(studentData){
             studentFactory.addNewStudent(studentData).then(function(data){
                 if(data.data.success){
+                    $timeout(function(){
+                        app.successMsg = 'Student Registered Successfully';
+                        app.registered = true;
+                        $('#loading').modal('hide');
+                        $('.form input').val('')
+                    },500)
                     // Data loaded
                 } else{
                     // handle error
@@ -25,27 +38,34 @@ angular.module('studentController', ['studentService'])
         }
     }
     this.fetchStudentRecord = function(student){
+        app.triggerLoading('loading');
+        $('#fetch').val('');
         if(student){
             studentFactory.getStudentRec(student).then(function(data){
-                if(data.data.success){
-                    app.displayCard={};
-                    app.displayCard.classes =[]
-                    console.log(data.data)
-                    app.displayCard.ID = data.data.student.studentid;
-                    app.displayCard.name = data.data.student.name;
-                    app.displayCard.email = data.data.student.email;
-                    for(let i=0; i < data.data.final.length; i++){
-                        for(let n=0; n < data.data.student.academic.length; n++){
-                            if(data.data.student.academic[n]._id === data.data.final[i].courseID){
-                                classCard = {course: data.data.student.academic[n].class.classCode, final: data.data.final[i].final, scores: data.data.student.academic[n].score};
-                                app.displayCard.classes.push(classCard);
+                $timeout(function(){
+                    if(data.data.success){
+                        
+                        app.displayCard={};
+                        app.displayCard.classes =[]
+                        console.log(data.data)
+                        app.displayCard.ID = data.data.student.studentid;
+                        app.displayCard.name = data.data.student.name;
+                        app.displayCard.email = data.data.student.email;
+                        for(let i=0; i < data.data.final.length; i++){
+                            for(let n=0; n < data.data.student.academic.length; n++){
+                                if(data.data.student.academic[n].class.classCode === data.data.final[i].courseID){
+                                    classCard = {course: data.data.student.academic[n].class.classCode, final: data.data.final[i].final, scores: data.data.student.academic[n].score};
+                                    console.log(classCard)
+                                    app.displayCard.classes.push(classCard);
+                                }
                             }
                         }
+                        $('#loading').modal('hide');
+    
+                    }else{
+                        // handle error
                     }
-                    console.log(app.displayCard)
-                }else{
-                    // handle error
-                }
+                },500)
             })
         }
     }
@@ -54,8 +74,16 @@ angular.module('studentController', ['studentService'])
           $(this).removeAttr('readonly');
       })
     }
+
+    this.disableEdit = function(){
+        $('#student-record input').each(function(){
+            $(this).prop('readonly', true);
+        })
+      }
+
     this.updateRecord = function(studentID, studentName, studentEmail, card){
-        console.log(card)
+        app.triggerLoading('loading');
+        app.disableEdit();
         recObj = {}
         recObj.ID = studentID;
         recObj.name = studentName;
@@ -65,7 +93,16 @@ angular.module('studentController', ['studentService'])
             recObj.courses.unshift(value);
         })
         console.log(recObj)
-        studentFactory.updateRecord(recObj)
+        studentFactory.updateRecord(recObj).then(function(data){
+            if(data.data.success){
+                app.successMsg = data.data.message;
+                $timeout(function(){
+                    $('#loading').modal('hide');
+                    app.disableEdit();
+                    app.updatesuccessMsg = data.data.message;
+                }, 500)
+            }
+        })
 
     }
-})
+}])

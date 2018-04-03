@@ -1,25 +1,26 @@
-<div class="page-header">
+<div class="page-header" data-ng-init="classCtrl.fetchClasses()">
     <h3>Student Enrollment</h3>
 </div>
         <div>
-            <button type="button" class="button btn-danger" ng-click="classCtrl.fetchClasses()"></button>
-            <table>
+            <div ng-if="classCtrl.added==true">Successfully added &#35;{{ classCtrl.studentAdded }} to class {{ classCtrl.toClass }}</div>
+            <table class="custom-table" id="enrollment">
                 <thead>
                     <tr>
                         <td>Course Code</td>
                         <td>Course Title</td>
                         <td colspan="3">Course Details</td>
+                        <td>ID#</td>
                         <td>Enroll</td>
                     </tr>
                 </thead>
                 <tbody>
-                        <tbody ng-repeat=" class in classCtrl.classes">
+                        <tr ng-repeat=" class in classCtrl.classes">
                             <td>{{ class.classCode }}</td>
                             <td>{{ class.className }}</td>
                             <td colspan="3">{{ class.classDesc }}</td>
                             <td><input type="text" ng-model="class.studentID" placeholder="Student ID"></td>
-                            <td><button class="button btn-primary" type="button" ng-click="classCtrl.addtoClass(class._id, class.studentID)"></button></td>
-                        </tbody>
+                            <td><button class="button btn-primary" type="button" ng-click="classCtrl.addtoClass(class._id, class.studentID, class.classCode)">Enroll</button></td>
+                        </tr>
                 </tbody>
             </table>
         </div>

@@ -1,4 +1,4 @@
-<div class="container col-md-6 text-center login-page">
+<div class="container col-md-6 text-center form">
     <div class="page-header">
         <h3>Administrators Login</h3>
     </div>
@@ -15,9 +15,11 @@
                 <input type="password" class="form-control" autocomplete="current-password" id="userpassword" placeholder="Enter Password" ng-model="main.loginData.password">
             </div> 
         </div>
-        <button type="submit" class="button btn-primary">Submit</button>&nbsp;
-        <button type="button" class="button btn-success" ng-click="main.fb()">FACEBOOK LOGIN</button>
-        <button type="button" class="button btn-info" ng-click="main.triggerModal('reset')">Reset Username/Password</button>
+        <div class="form-group row grouped-buttons">
+            <button type="submit" class="button btn-primary">Sign in</button>&nbsp;
+            <button type="button" class="button btn-fb" ng-click="main.fb()"><i class="fa fa-facebook-square"></i> login</button>
+            <button type="button" class="button btn-info" ng-click="main.triggerModal('reset')">Reset Username/Password</button>
+        </div>
     </form>
     <div class="feedback">
         <div class="jumbotron text-center" ng-show="main.loading">

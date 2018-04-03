@@ -320,20 +320,23 @@ module.exports = function(router){
        if(!req.body){
            // handle error
            res.json({ success: false, message: 'Failed to enroll'});
-       } else {
-            
-            
+       } else {            
             Student.findOne({studentid: studentID}).select('_id academic').exec(function(err, student){
-                
-                // student.academic.class = studentcourse;
-                enrolledstudent = student;
-                classList = student.academic;
-                classList.push(obj);
-                pushStudent(student);
-                student.save(function(err){
-                    // handle error
+                if(err){
+                    res.json({success: false, message: 'student not found'})
+                }else{
+
+                    res.json({success: true, message: 'Student Enrolled'})
+                    // student.academic.class = studentcourse;
+                    enrolledstudent = student;
+                    classList = student.academic;
+                    classList.push(obj);
+                    pushStudent(student);
+                    student.save(function(err){
+                        // handle error
                     
-                });
+                    });
+                }
            });
            var pushStudent = function (student){
                 Class.findById(req.body.coursecode).select('enrolled').exec(function(err, course){
@@ -374,24 +377,11 @@ module.exports = function(router){
        let n = false;
        let e = false;
        let scoreCorrections = [];
-       console.log(req.body)
-        // for(let i = 0; i < req.body.courses.length; i++){
-        //     courseID = req.body.courses[i]._id;
-        //     scoreCorrections.push({courseID: courseID, corrections: []});
-        //     for( var score of req.body.courses[i].score){
-        //        scoreCorrections[i].corrections.push({scoreID: score._id, correction: score.score})
-        //     }
-            
-        // };
-        // console.log(scoreCorrections)
-
         Student.findOne({'studentid': req.body.ID}).exec(function(err, student){
             if(student){
                 for( i=0; i < req.body.courses.length; i++){
                     for(c=0; c < student.academic.length; c++){
                         for(s=0; s < student.academic[c].score.length; s++){
-                            console.log('1: '+student.academic[c].score[s]._id)
-                            console.log('2: '+req.body.courses[i]._id)
                             if(student.academic[c].score[s]._id == req.body.courses[i]._id){
                                 student.academic[c].score[s].score = req.body.courses[i].score
                             }
@@ -400,8 +390,8 @@ module.exports = function(router){
                 }
             }
             student.save(function(err){
-                            console.log(err)
-                        })
+                res.json({success:true, message: 'Record Updated'})
+            })
         })
     })
    //Get Class Card
@@ -417,14 +407,16 @@ module.exports = function(router){
 
    //Update Class Record
    router.put('/adminapi/updateclass', function(req, res, err){
-       Class.findOne({'classCode' : req.body.classCode}).exec(function(err, course){
-           course.classCode = req.body.classCode
-           course.className = req.body.className
-           course.classDesc = req.body.classDesc
-           course.classStart = req.body.classStart
+       Class.findOne({classCode : req.body.classCode}).exec(function(err, course){
+           console.log(req.body.classCode)
+        //    console.log(course)
+           course.classCode = req.body.classCode,
+           course.className = req.body.className,
+           course.classDesc = req.body.classDesc,
+           course.classStart = req.body.classStart,
            course.classDuration = req.body.classDuration
            course.save(function(err){
-            // handle error
+            res.json({success: true, message: 'Class record updated'})
            });
        });
    });
@@ -433,6 +425,7 @@ module.exports = function(router){
    router.post('/adminapi/submitmark', function(req, res, err){
        Student.findOne({name: req.body.name}).populate('academic academic.class').exec(function(err, student){
             for ( var index of student.academic) {
+                console.log(index.class._id + ' : ' + req.body.classroom)
                 if(index.class._id == req.body.classroom){
                     student.academic.id(index._id).score.push({type: req.body.type, score: req.body.mark})
                 } else {
@@ -440,7 +433,7 @@ module.exports = function(router){
                 }
             }
            student.save(function(err){
-               // handle error
+            res.json({success:true, message:'Marks submitted'})
            });
        });
    });
@@ -458,11 +451,8 @@ module.exports = function(router){
                     for(var i = 0; i < data.length; i++){
                         grade = {name: data[i].name, final: data[i].final}
                     marks.push(grade)
-                    // console.log(grade)
                     }
                 })
-                
-                // console.log(marks)
             }
             setTimeout(function(){
                 res.json({success: true, marks: marks})

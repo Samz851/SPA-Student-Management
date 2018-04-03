@@ -10,9 +10,14 @@ angular.module('maincontroller',['authService'])
     app.logUserRole;
     app.isLoggedIn = Auth.isLoggedIn();
     $scope.logUsername = Auth.identity.username;
+    // this.loadingModal = $('#loading').modal();
 
 
-    // function to set Name
+    
+    this.triggerModal = function(dom){
+        var id = '#'+dom;
+        $(id).modal('toggle')
+    }
 
     this.loadWelcome = function(){
         var divs = $('.label');
@@ -80,17 +85,21 @@ angular.module('maincontroller',['authService'])
     this.loginUser = function(loginData){
         app.loading = true;
         app.errorMsg = false;
+        app.triggerModal('loading');
         Auth.login(app.loginData).then(function(data){
             if(data.data.success){
                 app.loading = false;
                 //Success Message
                 app.successMsg = data.data.message + "...Redirecting, please wait";
+                
                 $scope.logUsername = data.data.username;
                 app.logUserRole = data.data.role;
-                $state.reload() // relaod parent state
+                
                 //Timeout redirecting to homepage
                 $timeout(function(){
                     // $location.path('/profile');
+                    $state.reload() // relaod parent state
+                    $('#loading').modal('toggle')
                     $state.go("app.dashboard");
                     app.loginData = null;
                     app.successMsg = null;
@@ -107,17 +116,14 @@ angular.module('maincontroller',['authService'])
 
     this.logout = function(){
         Auth.logout();
+        app.triggerModal('loading')
         $timeout(function(){
+            $('#loading').modal('toggle')
             $state.go("app.welcome",{}, {reload: true});
         },2000);
     }
 
-    this.triggerModal = function(dom){
-        var id = '#'+dom;
-        $(id).modal({
-            backdrop: 'static',
-            keyboard: false})
-    }
+    
     this.sessionLogout = function(){
         Auth.logout();
         AuthToken.setToken();
