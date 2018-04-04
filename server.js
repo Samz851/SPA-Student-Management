@@ -19,7 +19,6 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static(__dirname + '/public'));
 app.use('/api',routes);
 
-
 mongoose.connect('mongodb://stdntApp:stdntApp851@ds233769.mlab.com:33769/stdntmgmt', function(err){
     if(err){
         console.log('Connection to DB failed');
@@ -28,15 +27,6 @@ mongoose.connect('mongodb://stdntApp:stdntApp851@ds233769.mlab.com:33769/stdntmg
     }
 });
     
-//Localhost DB
-// mongoose.connect('mongodb://127.0.0.1:27017/usermgmt', function(err){
-//     if(err){
-//         console.log('Connection to DB failed \n' + err);
-//     }else{
-//         console.log('Connection to Database Successful');
-//     }
-// });
-
 // Routes
 app.get('*', function(req, res, err){
     res.sendFile(path.join(__dirname + "/public/app/views/index.html"));
