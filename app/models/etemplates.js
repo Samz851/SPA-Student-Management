@@ -1,7 +1,7 @@
 
     var nodemailer = require("nodemailer");
 
-    const domain = "http://127.0.0.1:3100/"
+    const domain = "https://mysterious-beach-59514.herokuapp.com/"
     let mailTransporter = nodemailer.createTransport({
         service: 'Mailgun',
         auth: {
@@ -31,7 +31,7 @@
     resendUsername: function(email, user){
         mailOptions={
             to: email,
-            subject: "Your Username at Localhost",
+            subject: "Your Username at STDNT APP",
             html: "Hello, \n You have requested your username\nUsername:"+user.username
         }
         mailTransporter.sendMail(mailOptions, function(err, res){
@@ -47,7 +47,7 @@
         var url= domain+"resetpassword/"+token;
         mailOptions={
             to: email,
-            subject: "Reset Your Password at Localhost",
+            subject: "Reset Your Password at STDNT APP",
             html: "Hello "+firstname+" You have requested to reset your password, please follow the link below\n"+url
         }
         mailTransporter.sendMail(mailOptions, function(err, res){

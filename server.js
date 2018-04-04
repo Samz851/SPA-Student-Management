@@ -20,13 +20,22 @@ app.use(express.static(__dirname + '/public'));
 app.use('/api',routes);
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/usermgmt', function(err){
+mongoose.connect('mongodb://stdntApp:stdntApp851@ds233769.mlab.com:33769/stdntmgmt', function(err){
     if(err){
-        console.log('Connection to DB failed \n' + err);
+        console.log('Connection to DB failed');
     }else{
-        console.log('Connection to Database Successful');
+        console.log('Connection to Database Successful');        
     }
 });
+    
+//Localhost DB
+// mongoose.connect('mongodb://127.0.0.1:27017/usermgmt', function(err){
+//     if(err){
+//         console.log('Connection to DB failed \n' + err);
+//     }else{
+//         console.log('Connection to Database Successful');
+//     }
+// });
 
 // Routes
 app.get('*', function(req, res, err){

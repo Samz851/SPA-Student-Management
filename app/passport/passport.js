@@ -25,7 +25,7 @@ module.exports= function( app, passport){
     passport.use(new FacebookStrategy({
         clientID: "145944316075034", //FACEBOOK_APP_ID,
         clientSecret: "1f62e22d63205c1da670370708eedffa", //FACEBOOK_APP_SECRET,
-        callbackURL: "http://localhost:3000/auth/facebook/callback",
+        callbackURL: "https://mysterious-beach-59514.herokuapp.com/auth/facebook/callback",
         profileFields: ['id', 'displayName', 'photos', 'email']
       },
       function(accessToken, refreshToken, profile, done) {
