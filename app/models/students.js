@@ -18,7 +18,6 @@ var StudentSchema = new Schema({
         auto: true},
     name: String,
     scores: [scoresSchema],
-    // classes: [{type:Schema.Types.ObjectId, ref:'Class'}],
     academic: [{
         class: {type:Schema.Types.ObjectId,ref: 'Class'},
         score: [scoresSchema]
@@ -31,10 +30,6 @@ var StudentSchema = new Schema({
 }, {collection: 'students'})
 StudentSchema.plugin(autoIncrement.plugin, { model: 'Student', field: 'studentid' });
 
-// Virtuals
-
-
-//find average
 StudentSchema.method('finalGrade', function () {
    // SET FINAL GRADE
             var deferred = $q.defer();
@@ -85,9 +80,6 @@ StudentSchema.method('finalGrade', function () {
                     return finalGrade;
                 }
                 var score = loopScores(this, calcFinal)
-               
-               //END
-            //    deferred.resolve(score);
                return deferred.promise;
   })
 

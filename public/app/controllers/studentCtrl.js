@@ -47,7 +47,6 @@ angular.module('studentController', ['studentService'])
                         
                         app.displayCard={};
                         app.displayCard.classes =[]
-                        console.log(data.data)
                         app.displayCard.ID = data.data.student.studentid;
                         app.displayCard.name = data.data.student.name;
                         app.displayCard.email = data.data.student.email;
@@ -55,7 +54,6 @@ angular.module('studentController', ['studentService'])
                             for(let n=0; n < data.data.student.academic.length; n++){
                                 if(data.data.student.academic[n].class.classCode === data.data.final[i].courseID){
                                     classCard = {course: data.data.student.academic[n].class.classCode, final: data.data.final[i].final, scores: data.data.student.academic[n].score};
-                                    console.log(classCard)
                                     app.displayCard.classes.push(classCard);
                                 }
                             }
@@ -92,7 +90,6 @@ angular.module('studentController', ['studentService'])
         angular.forEach(card.scores, function(value, key){
             recObj.courses.unshift(value);
         })
-        console.log(recObj)
         studentFactory.updateRecord(recObj).then(function(data){
             if(data.data.success){
                 app.successMsg = data.data.message;

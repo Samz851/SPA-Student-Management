@@ -1,6 +1,6 @@
 angular.module('dashboardcontroller',['classSrv', 'chart.js','edugateRoutesUI'])
 
-.controller('dashCtrl',['classFactory', '$q', 'logging', '$timeout', function(classFactory, $q, logging, $timeout){
+.controller('dashCtrl',['classFactory', '$q', '$timeout', function(classFactory, $q, $timeout){
     var app=this;
 
 
@@ -11,7 +11,6 @@ angular.module('dashboardcontroller',['classSrv', 'chart.js','edugateRoutesUI'])
 
     this.rankStudents = function(){
         classFactory.rankStudents().then(function(data){
-            // console.log(data.data.marks);
             app.studentMarks = data.data.marks
             function compare(a, b){
                 let comparison = 0;
@@ -30,9 +29,7 @@ angular.module('dashboardcontroller',['classSrv', 'chart.js','edugateRoutesUI'])
                   totalscore += app.studentMarks[i].final;
 
               }
-              console.log( 'totalScore = '+ totalscore)
-              app.ave = totalscore / app.studentMarks.length
-              console.log('average score = ' + app.ave)
+              app.ave = totalscore / app.studentMarks.length;
               
         })
     }
@@ -50,10 +47,8 @@ angular.module('dashboardcontroller',['classSrv', 'chart.js','edugateRoutesUI'])
         })
     }
     app.studentsInClassroom();
-    console.log(app.aggClassrooms)
 
     this.fitChartContainer = function(){
-    //    var canvas =  $('#classrooms-chart');
        var canvas = document.getElementById("classrooms-chart");
        canvas.width = $("#second-chart-parent").width();
        canvas.height = $("#second-chart-parent").height();

@@ -22,8 +22,7 @@
         }
         mailTransporter.sendMail(mailOptions, function(err, res){
             if(err){
-                console.log('Error in email: '+err)
-                //res.JSON({success: false, message: "error sending email"})
+                res.JSON({success: false, message: "error sending email"})
             }else{
                 res.JSON({succes: true, message:"sent"});
             }

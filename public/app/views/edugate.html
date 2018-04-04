@@ -1,19 +1,19 @@
 <div class= "container-fluid nav-container row col-md-12">
-    <a class="navbar-brand col-md-3" ui-sref="app.welcome"><img src="/assets/img/logo.png"></a>
-    <nav class="navbar navbar-dark navbar-expand-md container col-md">
+    <a class="navbar-brand col-md-3" ui-sref="app.welcome"><img src="/assets/img/mean-logo.png"></a>
+    <nav class="navbar navbar-light navbar-expand-md container col-md">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <div class="collapse navbar-collapse text-center" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
                 <li ui-sref-active = "active" class="nav-item"><a class="nav-link" ui-sref="app.welcome">Home </a></li>
                 <li ui-sref-active = "active" class="nav-item"><a class="nav-link" ui-sref="app.about">About</a></li>
                 <li ui-sref-active = "active" ng-hide="main.isLoggedIn" class="nav-item"><a class="nav-link" ui-sref="app.register">Registration</a></li>
                 <li ui-sref-active = "active" ng-hide="main.isLoggedIn" class="nav-item"><a class="nav-link" ui-sref="app.login">Login</a></li>
-                <li ui-sref-active = "active" ng-hide="!main.isLoggedIn" class="nav-item"><a class="nav-link" ui-sref="app.logout" ng-click="main.logout()">LogOUT</a></li>
+                <li ui-sref-active = "active" ng-hide="!main.isLoggedIn" class="nav-item"><a class="nav-link" ui-sref="app.logout" ng-click="main.sessionLogout()">LogOUT</a></li>
                 <li ui-sref-active = "active" ng-hide="!main.isLoggedIn" class="nav-item"><a class="nav-link" ui-sref="app.dashboard">Dashboard</a></li>
             </ul>
-            <div class="float-right" ng-hide="!main.isLoggedIn" ><a ui-sref="app.dashboard">{{logUsername}}</a></div>
+            <div class="float-right user-ticket" ng-hide="!main.isLoggedIn" ><a ui-sref="app.dashboard">{{logUsername}}</a></div>
         </div>
     </nav>
     
@@ -105,5 +105,5 @@
     </div>
 </div>
 
-<main role="main"  ui-view="main">
+<main role="main"  ui-view="main" class="no-animate">
 </main><!-- /.container -->

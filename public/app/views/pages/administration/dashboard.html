@@ -2,44 +2,26 @@
     <div class="nav-side-menu">
         <div class="brand">Dashboard</div>
         
-        <div class="menu-list">
-                <li  data-toggle="collapse" data-target="#admin-services" class="collapsed active">
-                    <a href="#"><span class="glyphicon glyphicon-chevron-down"></span> Administrative Services </a>
+        <div class="menu-list text-center">
+                <li  data-toggle="collapse" data-target="#admin-services" class="collapsed" ui-sref-active = "active">
+                    <a href="#">Administrative Services </a>
                 </li>
                     <ul class="sub-menu collapse text-center" id="admin-services">
-                        <li class="active"><a ui-sref="app.dashboard.addnewclass">Add New Course</a></li>
-                        <li><a ui-sref="app.dashboard.enrollstudents">Enroll Student</a></li>
-                        <li><a ui-sref="app.dashboard.addnewstudent">Register Student</a></li>
-                        <li><a href="#">Register Instructor</a></li>
+                        <li ui-sref-active = "active"><a ui-sref="app.dashboard.addnewclass" >Add New Course</a></li>
+                        <li ui-sref-active = "active"><a ui-sref="app.dashboard.enrollstudents" >Enroll Student</a></li>
+                        <li ui-sref-active = "active"><a ui-sref="app.dashboard.addnewstudent" >Register Student</a></li>
                     </ul>
-                <li data-toggle="collapse" data-target="#academic-service" class="collapsed">
-                    <a href="#"><span class="glyphicon glyphicon-stats"></span> Academic Services </a>
+                <li data-toggle="collapse" data-target="#academic-service" class="collapsed" ui-sref-active = "active">
+                    <a href="#">Academic Services </a>
                 </li>  
                 <ul class="sub-menu collapse text-center" id="academic-service">
-                    <li><a ui-sref="app.dashboard.updtstudentrec">Update Student Record</a></li>
-                    <li><a ui-sref="app.dashboard.updatecourse">Edit Courses</a></li>
-                    <li><a ui-sref="app.dashboard.marks">Add Student Marks</a></li>
+                    <li ui-sref-active = "active"><a ui-sref="app.dashboard.updtstudentrec"> Update Student Record</a></li>
+                    <li ui-sref-active = "active"><a ui-sref="app.dashboard.updatecourse">Edit Courses</a></li>
+                    <li ui-sref-active = "active"><a ui-sref="app.dashboard.marks">Add Student Marks</a></li>
                 </ul>
-                <li data-toggle="collapse" data-target="#new" class="collapsed">
-                    <a href="#"><span class="glyphicon glyphicon-stats"></span> New </a>
-                </li>
-                    <li>
-                        <a href="#">
-                                <span class="glyphicon glyphicon-stats"></span></i> Profile
-                        </a>
-                    </li>
-                    <li>
-                    <a href="#">
-                            <span class="glyphicon glyphicon-stats"></span> Users
-                    </a>
-                </li>
-            </ul>
         </div>
     </div>
     <div id="dash-content" class="panel panel-info text-center">
-        <div class="page-header">
-            <h1 style="color:black">Hello {{logUsername}}</h1>
-        </div>
         <div class="row charts text-center">
             <div class="col-md-3 float-left">
                     <!-- <canvas  class="chart chart-doughnut" chart-data="dash.aggClassrooms" chart-labels="dash.aggClassrooms.code" data-ng-init="dash.fitChartContainer()"></canvas>  -->
@@ -65,18 +47,22 @@
             </div>
             <div class="col-md-3 float-right">
                 <div class="average-container text-center">
-                    <h3><strong>{{ dash.ave | number:2 }}</strong></h3>
+                    <h4><strong>{{ dash.ave | number:2 }}</strong></h4>
                     <h5><strong>Ave</strong></h5>
                 </div>
                 <div class="rank-container row">
                     <div ng-repeat = "student in dash.studentMarks|limitTo:3" class="col">
-                        <p style="color: black; font-size:0.5rem"><strong>{{ student.name }}</strong></p>
-                        <p style="color: black; font-size:0.5rem"><strong>{{ student.final }}</strong></p>
+                        <p style="color: black; font-size:0.65rem"><strong>{{ student.name }}</strong></p>
+                        <p style="color: black; font-size:0.65rem"><strong>{{ student.final | number: 2 }}</strong></p>
                     </div>
 
                 </div>
             </div>
         </div>
-        <div ui-view="dashview" style="border-top:5px solid white; margin-top: 20px; padding:15px;"></div>
+            <div class="span12 ui-view-container">
+                <div ui-view="dashview" class="animate animated slideInLeft" ></div>
+            </div>
+        </div>
+        
     </div>
 </div>

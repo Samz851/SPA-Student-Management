@@ -44,6 +44,9 @@
                 <p ng-message="maxlength">Password Should be no longer than 24 characters</p>
             </div>
         </div>
+        <div class="form-group">
+            <label for"userrole">Role: </label><select ng-model="register.regData.role" style="min-width:100%"><option value="guest">Prospectus</option><option value="student">Student</option><option value="instructor">Instructor</option><option value="admin">Administrator</option></select>
+        </div>
         <button type="submit" class="button btn-primary" ng-disabled="regForm.$invalid">Submit</button>
     </form>
     <div class="feedback">

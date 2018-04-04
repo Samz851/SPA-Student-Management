@@ -17,7 +17,8 @@ module.exports = function(router){
         user.username = req.body.username;
         user.password = req.body.password;
         user.email = req.body.email;
-        user.name = req.body.firstname + req.body.lastname;
+        user.name = req.body.firstname + ' ' + req.body.lastname;
+        user.role = req.body.role;
         user.temptoken = jwt.sign({ username: req.body.username, email: req.body.email,}, secret, { expiresIn: '72h' });
         var cond = req.body.username == null || req.body.username == ' ' || req.body.password == null || req.body.password == ' ' || req.body.email == null || req.body.email == ' ';
         if(cond){
@@ -196,7 +197,7 @@ module.exports = function(router){
                         name: name,
                         role: user.role,
                         date: date
-                      }, secret, { expiresIn: '1h' });
+                      }, secret, { expiresIn: '60s' });
                        res.json({success: true, message: 'You are logged in', token: token, username: user.username, role : user.role});
                    }
                 }
@@ -232,12 +233,16 @@ module.exports = function(router){
 
     // Route to provide the user with a new token to renew session
     router.get('/renewToken/:username', function(req, res) {
-        User.findOne({ username: req.params.username }).select('username email').exec(function(err, user) {
+        date = new Date();
+        User.findOne({ username: req.params.username }).select('username email role').exec(function(err, user) {
             // Check if username was found in database
             if (!user) {
                 res.json({ success: false, message: 'No user was found' }); // Return error
             } else {
-                var newToken = jwt.sign({ username: user.username, email: user.email, session: "renewed" }, secret, { expiresIn: '1h' }); // Give user a new token
+                var newToken = jwt.sign({ username: user.username,
+                    role: user.role,
+                    date: date,
+                    session: "renewed" }, secret, { expiresIn: '1h' }); // Give user a new token
                 res.json({ success: true, message: "token refreshed", token: newToken }); // Return newToken in JSON object to controller
             }
         });
@@ -408,8 +413,6 @@ module.exports = function(router){
    //Update Class Record
    router.put('/adminapi/updateclass', function(req, res, err){
        Class.findOne({classCode : req.body.classCode}).exec(function(err, course){
-           console.log(req.body.classCode)
-        //    console.log(course)
            course.classCode = req.body.classCode,
            course.className = req.body.className,
            course.classDesc = req.body.classDesc,
@@ -425,7 +428,6 @@ module.exports = function(router){
    router.post('/adminapi/submitmark', function(req, res, err){
        Student.findOne({name: req.body.name}).populate('academic academic.class').exec(function(err, student){
             for ( var index of student.academic) {
-                console.log(index.class._id + ' : ' + req.body.classroom)
                 if(index.class._id == req.body.classroom){
                     student.academic.id(index._id).score.push({type: req.body.type, score: req.body.mark})
                 } else {
@@ -445,7 +447,6 @@ module.exports = function(router){
         select('name academic').
         populate('academic.class').
         exec(function(err, students){
-            // console.log(students)
             for( student of students){
                 student.finalGrade().then(function(data){
                     for(var i = 0; i < data.length; i++){

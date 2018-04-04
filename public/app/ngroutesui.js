@@ -4,9 +4,17 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classS
 
 	// Default
 	$urlRouterProvider.otherwise("/");
-	var hasToken = false;
-	var userRole = 'guest';
-
+	// var userRole = 'guest';
+	
+	var checkToken = ['Auth', '$q', function(Auth, $q){
+		var deferred = $q.defer();
+		if(Auth.isLoggedIn()== true) {
+			deferred.resolve(true)
+		} else {
+			deferred.resolve(false)
+		}
+		return deferred.promise
+	}]
 	var Authenticate =	['Auth','$q',
 		function(Auth, $q) { 
 			var deferred = $q.defer();
@@ -22,11 +30,11 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classS
 							deferred.resolve(user);
 						}
 					} else { // Promise not Resolved Yet
-						deferred.resolve(console.log('Promise not Resolved yet'))
+						deferred.resolve('Promise not Resolved yet')
 					}
 					
 				}).catch(function(){
-					deferred.reject(console.log('user'))
+					deferred.reject('User Error')
 				});
 			return deferred.promise
 			
@@ -36,7 +44,7 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classS
 	$stateProvider
 
 	.state('app', {
-		abstract: true, // makes this state not directly accessible
+		// abstract: true, // makes this state not directly accessible
 		views: {
 			"edugate": {
 				templateUrl: 'app/views/edugate.html',
@@ -45,7 +53,8 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classS
 			}
 		},
 		resolve: {
-			Authenticate: Authenticate
+			Authenticate: Authenticate,
+			hasToken: checkToken
 		},
 		data: {
 			roles: ['guest', 'admin', 'instructor', 'student']
@@ -126,9 +135,6 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classS
 			},
 			resolve: {
 				Authenticate: Authenticate,
-				logging: function(){
-					return 'Resolve Works!'
-				}
 			},
 			data: {
 				roles: ['admin', 'instructor'],
@@ -253,8 +259,8 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classS
 				}
 			},
 			data: {
-				roles: ['guest', 'admin', 'instructor', 'student'],
-				private: false
+				roles: [ 'admin', 'instructor', 'student'],
+				private: true
 			},
 			resolve: {
 				Authenticate: Authenticate
@@ -303,21 +309,28 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classS
         });
 	}])
 	app.run(function($transitions, Auth, $state, $q){
-		$transitions.onSuccess({}, function(transition){
+		
+		$transitions.onStart({}, function(transition){
 			var deferred = $q.defer();
-			if(!Auth.isLoggedIn() && transition.to().data.private ){
-				deferred.resolve($state.go('app.login'));
-			} else {	// User is Logged in
-					var stateRoles = transition.to().data.roles;
-					var userRole = Auth.identity.role
-				if(!stateRoles.includes(userRole)){
-
-					deferred.resolve($state.go('app.accessdenied'));
+			if(transition.to().data.private ){
+				if(!Auth.isLoggedIn()){
+					deferred.resolve($state.go('app.login'));
+				} else {
+					Auth.decodeToken().then(function(data){
+						if(data.data.success){
+							var stateRoles = transition.to().data.roles;
+							var userRole = data.data.decoded.role;
+							if(!stateRoles.includes(userRole)){
+								deferred.resolve($state.go('app.accessdenied',{}, {reload:true}));
+							}
+						}else{
+							deferred.resolve($state.go('app'),{}, {reload: true})
+						}
+						
+					})
 				}
 			}
 			return deferred;
-			
-
 		})
 	})
 

@@ -5,12 +5,12 @@ input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 30px white inset;
 }
 html {
-    font-size: 16px;
+    font-size: 18px;
 
 
 }
 h1,h2,h3,h4,h5,p, label {
-    color:rgb(0, 0, 0);
+    color:white;
 }
 input[type]:not([type=hidden]) {
     border-radius: 0px;
@@ -61,37 +61,10 @@ li {
     color: rgb(42, 77, 119);
     font-weight: bolder;
 }
-.nav-item {
-    border: 2px solid #87c88f;
-    min-width:110px;
-    margin:0 5%;
-    border-radius: 25% 50%;
-}
 
 body {
+    background-color: #e9e9e9;
     height:auto !important;
-    background: url('/assets/img/colorful_640.png');
-    background-size: 400px;
-    background-repeat: no-repeat;
-    background-position-x: 80%;
-    background-position-y: 60%;
-}
-.user-ticket {
-    position: relative;
-    top: 80px;
-    right: -50px;
-    height: 50px;
-    border-bottom-left-radius: 25%;
-    border-top-left-radius: 25%;
-    width: 100px;
-    background:#3fa9f5;
-    box-shadow: -5px 5px 5px grey;
-}
-.user-ticket a {
-    position: relative;
-    top: 10px;
-    left: 10px;
-    color:white;
 }
 .row {
     margin:0;
@@ -117,6 +90,7 @@ body {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
 .nav-container {
+    background-color:rgb(191,191,201);
     color:#17237d;
 }
 .navbar {
@@ -124,10 +98,7 @@ body {
     font-size: 1rem;
 }
 .modal-content {
-    background-color:rgba(0,0,0,0.87);
-}
-.modal label, h5 {
-    color:white;
+    background-color: #565656;
 }
 
 header.navbar{
@@ -186,12 +157,13 @@ input:focus.ng-dirty.ng-valid {
 
 /* NAVBAR */
 .navbar-brand {
-    max-width: 100px;
+    max-width: 170px;
 }
 .navbar-brand img {
-    max-height: 100px;
+    max-width: 100%;
 }
 .page-header {
+    background: #2a4d77;
     width: 30vw;
     margin: auto;
 }
@@ -200,7 +172,55 @@ input:focus.ng-dirty.ng-valid {
     display: inline-block;
     padding-top: 10px;
 }
-
+.welcome {
+    /* margin: 0 auto;
+    width:400px; */
+    overflow: hidden;
+    padding: 0 0 ;
+    /* border-right: 50px solid transparent; */
+    }
+.welcome > div {
+    cursor: pointer;
+}
+    .welcome a{
+    float:right;
+    font-size: 1.5rem;
+    color: white;
+    text-shadow: 2px 2px 0px grey;
+    display: block;
+    padding: 10px;
+    font-weight: bolder;
+    }
+#shape1 {
+    width: 0;
+    height: 150px;
+    border-style: solid;
+    border-width: 0 250px 50px 0;
+    border-color: transparent #1e98b0 transparent transparent;
+    margin-bottom:-35px;
+    }
+    #shape1 > a {
+    float:none;
+    }
+#shape2 {
+      width: 0;
+    height: 150px;
+    border-style: solid;
+    border-width: 50px 0px 0px 250px;
+    border-color: transparent transparent transparent #2a4d77;;
+    margin-bottom: 15px;
+    }
+    
+#rectangle {
+        width:250px;
+        height: 155px;
+        background: #1a727b;
+    }
+    #rectangle > a {
+        float: none;
+        top: 35px;
+        position: relative;
+    }
 .slide-left {
     margin-left:-250px;
 }
@@ -209,11 +229,19 @@ input:focus.ng-dirty.ng-valid {
 }
 .welcome-content{
     float: right;
-    margin-top: 100px;
+    /* background-color:rgba(191,191,201,0.4); */
+    background: url('/assets/img/technology-2bg.jpg');
+    background-repeat: no-repeat;
+    /* background-attachment: fixed; */
+    background-size: auto;
 }
 .welcome-content li {
     padding: 5px;
     display: inline-block;
+}
+.newsletter {
+    position: relative;
+    bottom: 30px;
 }
 .home-section2 {
 
@@ -234,7 +262,7 @@ input:focus.ng-dirty.ng-valid {
 /* Login Page */
 .form {
     margin-top: 15px;
-    background-color:#fafafa00;
+    background-color: #bdc1c1;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
     padding: 15px;
 }
@@ -254,27 +282,23 @@ input:focus.ng-dirty.ng-valid {
     float: right;
     margin: 15px;
 }
-.menu-list {
-    margin-top: 15px;
-}
 .nav-side-menu {
     overflow: auto;
     font-family: verdana;
     font-weight: 200;
+    background-color: #76323f;
     height: 100%;
-    color: #7d7d7d;
-    margin-top: 25px;
+    color: #e1ffff;
   }
-  .nav-side-menu ul:not(.sub-menu), .nav-side-menu li:not(.sub-menu) {
-    border: 2px solid #46bfbd;
+  .nav-side-menu ul, .nav-side-menu li {
+    background-color: #4e5f73 ;
   }
   .nav-side-menu .brand {
-    border: 2px solid #7dc286;
+    background-color: #2a4d77;
     line-height: 50px;
     display: block;
     text-align: center;
     font-size: 14px;
-    border-radius:40%;
   }
   .nav-side-menu .toggle-btn {
     display: none;
@@ -300,7 +324,7 @@ input:focus.ng-dirty.ng-valid {
   .nav-side-menu ul .active,
   .nav-side-menu li .active {
     border-left: 3px solid #D7CEC7;
-    background-color: #f7464a;
+    background-color: #2a4d77;
   }
   .nav-side-menu ul .sub-menu li.active,
   .nav-side-menu li .sub-menu li.active {
@@ -333,12 +357,12 @@ input:focus.ng-dirty.ng-valid {
   }
   .nav-side-menu li {
     padding-left: 0px;
-    margin-top: 20px;
-    border-radius: 40%;
+    border-left: 3px solid #2e353d;
+    border-bottom: 1px solid #D7CEC7 !important;
   }
   .nav-side-menu li a {
     text-decoration: none;
-    color: #7d7d7d;
+    color: #e1ffff;
   }
   .nav-side-menu li a i {
     padding-left: 10px;
@@ -346,12 +370,13 @@ input:focus.ng-dirty.ng-valid {
     padding-right: 20px;
   }
   .nav-side-menu li:hover {
-    border: 2px solid #f7464a;
-    -webkit-transition: all 0.6s ease;
-    -moz-transition: all 0.6s ease;
-    -o-transition: all 0.6s ease;
-    -ms-transition: all 0.6s ease;
-    transition: all 0.6s ease;
+    border-left: 3px solid #D7CEC7;
+    background-color: #8f9ba9;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    transition: all 1s ease;
   }
   .sub-menu li {
     font-size: 0.7rem;
@@ -409,12 +434,15 @@ input:focus.ng-dirty.ng-valid {
        -moz-box-shadow:2px 2px 3px #888;
             box-shadow:2px 2px 3px #888;
     }
-    
+
+
+    .charts {
+        max-height: 200px;
+    }
   .charts > div {
-    margin: auto;
-    background-color: white;
-    height: auto;
-    min-height: 195px;
+      margin:15px;
+      background-color:#565656;
+      height: 200px;
   }
   .average-container {
     background: #97bbcd;
@@ -451,11 +479,6 @@ input:focus.ng-dirty.ng-valid {
 footer, footer >p {
     overflow: hidden;
     color:rgb(42, 77, 119);
-    margin:auto;
-}
-.footer-bottom p {
-    width: 40%;
-    margin: auto;
 }
 
 .no-animate {

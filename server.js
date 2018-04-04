@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var logger = require('morgan');
+var fs = require('fs');
 var mongoose = require('mongoose');
 var router = express.Router();
 var routes = require('./app/routes/api.js')(router);
@@ -12,6 +13,7 @@ var socialLogin = require('./app/passport/passport.js')(app, passport);
 
 //middleware
 app.use(logger('dev'));
+app.use(logger('common', {stream: fs.createWriteStream('./access.log', {flags: 'a'})}));
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static(__dirname + '/public'));

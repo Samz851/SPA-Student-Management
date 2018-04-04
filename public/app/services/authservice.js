@@ -13,6 +13,7 @@ angular.module('authService',['authTokenFactory'])
         .then(function(data) {
             AuthToken.setToken(data.data.token);
             identityAuthenticated = true;
+            authFactory.identity.role = data.data.role
             // getUser
             return data;
         });
@@ -20,6 +21,7 @@ angular.module('authService',['authTokenFactory'])
 
     authFactory.isLoggedIn = function() {
         if(AuthToken.getToken()) {
+            
             identityAuthenticated = true;
             return true;
         } else {
@@ -46,7 +48,7 @@ angular.module('authService',['authTokenFactory'])
                 }
                 
             }else{ // error
-                deferred.reject(console.log('token not decoded'));
+                deferred.reject('token not decoded');
                 identityAuthenticated = false;
                 authFactory.identity.role = 'guest';
             }  
@@ -64,7 +66,11 @@ angular.module('authService',['authTokenFactory'])
     }
 
     authFactory.logout = function(){
+        $('#session').modal('hide');
         AuthToken.setToken();
+        $state.go('app.welcome',{},{reload: true})
+        // $state.reload('app')
+        
     }
     //UI-Router related services
    

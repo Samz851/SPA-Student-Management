@@ -13,7 +13,6 @@ angular.module('classcontroller',['classSrv'])
     
     this.editable = function(){
         app.allowEdit = true;
-        console.log(app.allowEdit)
     }
     
     this.addNewClass = function(classData){
@@ -107,12 +106,15 @@ angular.module('classcontroller',['classSrv'])
     this.getClassMarks = function(classroom){
         classFactory.fetchClass(classroom.classCode).then(function(data){
             if(data.data.success){
-                console.log('should close modal')
                 app.classroom = data.data.card.enrolled;
             } else {
                 app.errMsg = data.data.message;
             }
         })
+    }
+    this.filterClass = function(filterName){
+        app.filterKey = filterName;
+        app.filterName = '';
     }
     this.submitMark = function(name, mark, type, classroom){
         app.triggerLoading('loading');

@@ -1,8 +1,8 @@
 // import { resolve } from "dns";
 
-angular.module('maincontroller',['authService'])
-.controller('mainCtrl',['$scope', 'Auth','$timeout','$state','$rootScope','$window','$interval','AuthToken','userFactory','Authenticate', function($scope, Auth, $timeout, $state, $rootScope, $window, $interval, AuthToken, userFactory, Authenticate){
-    
+angular.module('maincontroller',['authService','ngAnimate'])
+.controller('mainCtrl',['$scope', 'Auth','$timeout','$state','$rootScope','$window','$interval','AuthToken','userFactory','Authenticate','$animate' , function($scope, Auth, $timeout, $state, $rootScope, $window, $interval, AuthToken, userFactory, Authenticate, $animate, hasToken){
+    // $animate.classNameFilter(/ng-animate-enabled/);
     var app= this;
     app.loadMe = false;
     app.errorMsg = "";
@@ -13,21 +13,24 @@ angular.module('maincontroller',['authService'])
     // this.loadingModal = $('#loading').modal();
 
 
-    
+    this.runSessionCheck = function(){
+        $timeout(function(){
+            if ((app.checkingSession == false || app.checkingSession == null) && Auth.isLoggedIn()){
+                app.checkSession()
+                app.checkingSession = true;
+            } else {
+                app.checkingSession = false;
+            }
+        },500)
+
+    }
+    app.runSessionCheck()
+
     this.triggerModal = function(dom){
         var id = '#'+dom;
         $(id).modal('toggle')
     }
 
-    this.loadWelcome = function(){
-        var divs = $('.label');
-        $('.slide-left').animate({
-           marginLeft: '0px'
-        }, 500);
-        $('.slide-right').animate({
-            marginRight: '0px'
-        }, 500)
-    };
     this.toggleDashboardMenu = function() {
         var toggleWidth = $("#dash-menu").width() == 200 ? "50px" : "200px";
         $('#dash-menu').animate({ width: toggleWidth });
@@ -49,7 +52,7 @@ angular.module('maincontroller',['authService'])
                 if(difference > 30 ){
                 }
                 else if(difference  > 0 && difference <= 30 ) {
-                    app.triggerModal('session');
+                $('#session').modal('show')
                     app.loading = false;
                 } else {
                     app.loading = false;
@@ -58,15 +61,15 @@ angular.module('maincontroller',['authService'])
                     app.errorMsg = "Goodbye!"
                     $timeout(function(){
                         app.errorMsg = "";
-                        $('#session').modal('hide');
-                        $state.go('app.home', null, {inherit: false});
+                        // $('#session').modal('hide');
+                        // $state.reload()
+                        app.sessionLogout();
                     }, 2000);
                 }
                 
             }
         }, 2000)
     }
-    app.checkSession()
 
     
     this.getName = function(){
@@ -94,17 +97,19 @@ angular.module('maincontroller',['authService'])
                 
                 $scope.logUsername = data.data.username;
                 app.logUserRole = data.data.role;
+                app.checkingSession = true;
                 
                 //Timeout redirecting to homepage
                 $timeout(function(){
                     // $location.path('/profile');
-                    $state.reload() // relaod parent state
+                    // $state.reload('app') // relaod parent state
                     $('#loading').modal('toggle')
-                    $state.go("app.dashboard");
+                    $state.go("app.dashboard",{}, {reload:true});
                     app.loginData = null;
                     app.successMsg = null;
                     app.checkSession();
-                }, 2000);
+
+                }, 500);
             } else {
                 // Create an error message
                 app.loading = false;
@@ -114,24 +119,20 @@ angular.module('maincontroller',['authService'])
         })
     }
 
-    this.logout = function(){
-        Auth.logout();
-        app.triggerModal('loading')
-        $timeout(function(){
-            $('#loading').modal('toggle')
-            $state.go("app.welcome",{}, {reload: true});
-        },2000);
-    }
+    // this.logout = function(){
+    //     Auth.logout();
+    //         app.isLoggedIn = false;
+    // }
 
     
     this.sessionLogout = function(){
-        Auth.logout();
-        AuthToken.setToken();
+        
         this.loading = false;
         this.errorMsg = "Thank you for your visit";
         $timeout(function(){
-            $state.go('/');
+            // $state.go('app',{},{reload: true});
             $('#session').modal('hide');
+            Auth.logout();
         }, 500)
     }
 
@@ -197,6 +198,14 @@ angular.module('maincontroller',['authService'])
             }
         })
     }
-
-    
 })
+.config(['$animateProvider', function($animateProvider){
+    // restrict animation to elements with the bi-animate css class with a regexp.
+    // note: "bi-*" is our css namespace at @Bringr.
+    $animateProvider.classNameFilter(/animate/);
+  }]);
+// .directive("disableAnimate", function ($animate) {
+//     return function (scope, element) {
+//         $animate.enabled(false, element);
+//     };
+// });

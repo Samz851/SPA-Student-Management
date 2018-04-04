@@ -12,12 +12,15 @@
 <div>
     <table class="custom-table">
         <thead>
-            <td ng-if-start="marksCtrl.classroom">Student</td>
-            <td>Mark</td>
-            <td ng-if-end>Action</td>
+            <tr ng-if-start="marksCtrl.classroom"><td><label>Filter by Name: </label><input type="search" ng-model="marksCtrl.filterName"><button class="button btn-primary" ng-click="marksCtrl.filterClass(marksCtrl.filterName)">Search by Name</button></td></tr>
+            <tr ng-if-end>
+                <td>Student</td>
+                <td>Mark</td>
+                <td>Action</td>
+            </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="pupil in marksCtrl.classroom">
+            <tr ng-repeat="pupil in marksCtrl.classroom | filter: marksCtrl.filterKey" class="animated animate flipInX">
                 <td>{{ pupil.name }}</td>
                 <td><input name="score" type="text" ng-model="pupil.mark"><select ng-model="pupil.type"><option value="hw">Home Work</option><option value="qz">Quiz</option><option value="md">Mid-Term</option><option value="fn">Final Exam</option></select></td>
                 <td><button type="button" class="button btn-primary" ng-click="marksCtrl.submitMark(pupil.name, pupil.mark, pupil.type, marksCtrl.selected)">Submit</button></td>

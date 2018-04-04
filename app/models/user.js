@@ -79,12 +79,11 @@ var emailValidator = [
                 },
         role: {type: String,
                 required: true,
-                default: 'guest'},
+                },
         class: [{type: Schema.Types.ObjectId, ref: 'Class'}]
     })
 
   UserSchema.pre('save', function(next){
-      // do stuff
       let user = this;
       if (!user.isModified('password')) return next();
       bcrypt.hash(user.password, null, null, function(err, hash){
