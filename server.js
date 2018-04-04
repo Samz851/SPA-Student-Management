@@ -22,7 +22,7 @@ app.use('/api',routes);
 mongoose.connect('mongodb://stdntApp:stdntApp851@ds233769.mlab.com:33769/stdntmgmt', function(err){
     if(err){
         console.log('Connection to DB failed);
-    }esle{
+    }else{
         console.log('Connection to Database Successful');        
     }
 
