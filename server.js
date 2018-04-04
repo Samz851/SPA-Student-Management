@@ -21,10 +21,11 @@ app.use('/api',routes);
 
 mongoose.connect('mongodb://stdntApp:stdntApp851@ds233769.mlab.com:33769/stdntmgmt', function(err){
     if(err){
-        console.log('Connection to DB failed);
+        console.log('Connection to DB failed');
     }else{
         console.log('Connection to Database Successful');        
     }
+});
 
 //Localhost DB
 // mongoose.connect('mongodb://127.0.0.1:27017/usermgmt', function(err){
