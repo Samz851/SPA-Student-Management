@@ -9,6 +9,8 @@ angular.module('dashboardcontroller',['classSrv', 'chart.js','edugateRoutesUI'])
     app.data=[];
     app.labels=[];
 
+
+    
     this.rankStudents = function(){
         classFactory.rankStudents().then(function(data){
             app.studentMarks = data.data.marks

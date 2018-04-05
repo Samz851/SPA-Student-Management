@@ -102,8 +102,9 @@ angular.module('maincontroller',['authService','ngAnimate'])
                 //Timeout redirecting to homepage
                 $timeout(function(){
                     // $location.path('/profile');
-                    // $state.reload('app') // relaod parent state
-                    $('#loading').modal('toggle')
+                    $('#loading').modal('hide')
+                    $state.reload('app') // relaod parent state
+                    
                     $state.go("app.dashboard",{}, {reload:true});
                     app.loginData = null;
                     app.successMsg = null;
@@ -114,6 +115,9 @@ angular.module('maincontroller',['authService','ngAnimate'])
                 // Create an error message
                 app.loading = false;
                 app.errorMsg = data.data.message
+                $timeout(function(){
+                    $('#loading').modal('toggle')
+                }, 500)
             }
 
         })
@@ -167,7 +171,7 @@ angular.module('maincontroller',['authService','ngAnimate'])
     this.loading = false;
     
     this.resendUsername = function(email){
-        this.loading = true;
+        app.loading = true;
         userFactory.resendemail(email).then(function(data){
             if(data.data.success){
                 app.loading = false;
@@ -181,20 +185,23 @@ angular.module('maincontroller',['authService','ngAnimate'])
             }
         })
     }
-    this.resetPassword = function(email)
+    this.resetPasswordEmail = function(email)
     {
-        this.loading = true;
+        app.loading = true;
         userFactory.sendpasswordlink(email).then(function(data){
-            if(data.success){
-                this.loading = false;
-                this.successMsg = data.data.message;
+            if(data.data.success){
+                console.log(data)
+                app.loading = false;
+                app.successMsg = data.data.message;
                 $timeout(function(){
                     $('#reset').modal('hide');
                 },2000)
 
             } else {
-                this.loading = false;
-                this.errorMsg = data.data.message;
+                app.loading = false;
+                app.errorMsg = data.data.message;
+                console.log(data.data.success)
+                console.log(data)
             }
         })
     }

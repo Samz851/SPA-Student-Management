@@ -1,4 +1,4 @@
-var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classSrv'])
+var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classSrv', 'userService'])
 
 .config(['$stateProvider','$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider, Auth, $timeout, $q, $state, $transitions){
 
@@ -260,7 +260,7 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classS
 			},
 			data: {
 				roles: [ 'admin', 'instructor', 'student'],
-				private: true
+				private: false
 			},
 			resolve: {
 				Authenticate: Authenticate
@@ -289,7 +289,7 @@ var app = angular.module('edugateRoutesUI', ['ui.router', 'authService', 'classS
 			}
 		})
 		.state('app.resetpassword', {
-			url: 'resetpassword/:token',
+			url: '/resetpassword/:token',
 			views: {
 				"main": {
 					templateUrl: 'app/views/pages/resetpage.html',

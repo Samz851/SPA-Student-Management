@@ -127,23 +127,21 @@ module.exports = function(router){
     // Send Password Link
     router.put('/sendpasswordtoken/:email', function(req, res){
         var email = req.params.email;
-        User.findOne({email: email}).select('firstname temptoken').exec(function(err, user){
-            if(!user) {
+        User.findOne({email: email}).select('name temptoken').exec(function(err, authUser){
+            if(!authUser) {
                 res.json({success: false, message:"No user found with this email"});
             } else {
-                firstname = user.firstname;
-                token = jwt.sign({ firstname: firstname, email: email}, secret, { expiresIn: '72h' });
-                user.temptoken = token;
-                var sendUserinfo = eTemplate.resendPassword(email, firstname, token);
+                console.log(authUser)
+                var name = authUser.name;
+                token = jwt.sign({ name: name, email: email}, secret, { expiresIn: '72h' });
+                authUser.temptoken = token;
+                eTemplate.resendPassword(email, name, token);
+                console.log(name)
                 if(err) {
                     res.json({success:false, message: "Reset Failed, Please contact us"});                    
                 } else {
-                    user.save(function(err){
-                        if(err){
-                            res.json({success: false, message: "Reset token was not saved, please retry the password reset"});
-                        } else {
-                            res.json({success:true, message: "Password reset link was sent to your email"});
-                        }
+                    authUser.save(function(err){
+                        res.json({success:true, message: "Password reset link was sent to your email"});
                     });
                 }
             }
@@ -151,19 +149,25 @@ module.exports = function(router){
     });
 
     // Reset Password Route
-    router.post('/resetpassword/:token',function(req, res){
+    router.post('/privacy/resetpassword/:token',function(req, res){
+        console.log('req: '+ JSON.stringify(req.body))
         User.findOne({temptoken: req.params.token}).select('temptoken username password').exec(function(err, user){
             if(err) throw err;
+            // console.log('db: '+ user.username + 'req: ' + req.body.username)
             var token = req.params.token;
             jwt.verify(token, secret, function(err, decoded) {
                 if(err) {
                     res.json({success: false, message: ' token expired'});
                 } else if(!user || user.username !== req.body.username) {
+                    console.log(user.username)
+                    console.log(req.body.username)
                     res.json({success:false, message: 'account could not be found'});
                 } else {
                     user.temptoken = 'verified';
+                    user.password = req.body.password;
                     user.save(function(err){
                         if(err) throw err;
+                        console.log(err)
                         res.json({success: true, message: 'email tokens match and reset was successful'});
                     });
                 }
@@ -197,7 +201,7 @@ module.exports = function(router){
                         name: name,
                         role: user.role,
                         date: date
-                      }, secret, { expiresIn: '60s' });
+                      }, secret, { expiresIn: '20m' });
                        res.json({success: true, message: 'You are logged in', token: token, username: user.username, role : user.role});
                    }
                 }

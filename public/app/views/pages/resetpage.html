@@ -1,13 +1,13 @@
 <div class="page-header" >
     <h1>Password Reset Page</h1>
-    <form name="resetForm" ng-submit="email.resetpassword(resetData, resetForm.$valid);">
+    <form name="resetForm" ng-submit="email.resetpassword(email.resetData, resetForm.$valid);">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" placeholder="Enter Username" ng-model="email.resetData.username">
         </div>
         <div class="form-group">
-            <label for="userpassword">Password</label><span class="glyphicon glyphicon-ok" ng-show="((resetForm.password.$valid && !resetForm.password.$pristine)&&(resetForm.repassword.$valid && !resetForm.repassword.$pristine))"></span>
-            <span class="glyphicon glyphicon-remove" ng-show="((!resetForm.password.$valid && !resetForm.password.$pristine)||(!resetForm.repassword.$valid && !resetForm.repassword.$pristine))"></span>
+            <label for="userpassword">Password</label><span class="glyphicon glyphicon-ok" ng-if="((resetForm.password.$valid && !resetForm.password.$pristine)&&(resetForm.repassword.$valid && !resetForm.repassword.$pristine))"></span>
+            <span class="glyphicon glyphicon-remove" ng-if="((!resetForm.password.$valid && !resetForm.password.$pristine)||(!resetForm.repassword.$valid && !resetForm.repassword.$pristine))"></span>
             <input type="password" class="form-control" name="password" placeholder="Enter a new Password" ng-model="email.resetData.password" required ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{2,}$/" ng-minlength="6" ng-maxlength="24">
             <input type="password" class="form-control" name="repassword" placeholder="Retype your new Password" ng-model="email.resetData.repassword" required reset-match-pw>
             <div ng-messages="resetForm.password.$error">
@@ -18,10 +18,10 @@
             </div>
         <button type="submit" class="button btn-primary">Submit</button>
     <div class="feedback">
-        <div class="row show-hide-message" ng-show="email.successMsg">
+        <div class="row show-hide-message" ng-if="email.successMsg">
             <div class="alert alert-success">{{email.successMsg}}</div>
         </div>
-        <div class="row show-hide-message" ng-show="email.errorMsg">
+        <div class="row show-hide-message" ng-if="email.errorMsg">
             <div class="alert alert-danger">{{email.errorMsg}}</div>
         </div>
     </div>

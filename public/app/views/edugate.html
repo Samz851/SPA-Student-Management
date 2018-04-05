@@ -51,18 +51,18 @@
               </div>
               <div class="row">
                 <button type="button" class="button btn-primary" ng-click="reset.resendUsername(reset.email)">Reset Username</button>
-                <button type="button" class="button btn-primary" ng-click="reset.resetPassword(reset.email)">Reset Password</button>
+                <button type="button" class="button btn-primary" ng-click="reset.resetPasswordEmail(reset.email)">Reset Password</button>
             </div>
           </form>
           <div class="feedback">
-                <div class="jumbotron text-center" ng-show="reset.loading">
+                <div class="jumbotron text-center" ng-if="reset.loading">
                     <span class="glyphicon glypicon-repeat spinner"></span>
                     <p>loading...</p>
                     </div>
-                    <div class="row show-hide-message" ng-show="reset.successMsg">
+                    <div class="row show-hide-message" ng-if="reset.successMsg">
                         <div class="alert alert-success">{{reset.successMsg}}</div>
                     </div>
-                    <div class="row show-hide-message" ng-show="reset.errorMsg">
+                    <div class="row show-hide-message" ng-if="reset.errorMsg">
                         <div class="alert alert-danger">{{reset.errorMsg}}</div>
                     </div>
                 </div>

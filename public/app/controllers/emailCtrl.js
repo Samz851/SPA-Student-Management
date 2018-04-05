@@ -20,17 +20,20 @@ angular.module('emailController',['userService'])
 
     // Similar function to reset password
     this.resetpassword = function(resetData, valid){
-        app.errorMsg = resetData;
+        console.log(resetData)
         if(!valid) {
             app.loading = false;
             app.errorMsg += "\nPlease make sure the form is complete and all fields are valid before submitting...";
         } else {
-            userFactory.resetpassword($routeParams.token, resetData).then(function(data) {
+            userFactory.resetpassword($stateParams.token, resetData).then(function(data) {
+                console.log($stateParams.token)
                 // Check if activation was successful or not
                 if (data.data.success) {
-                    app.successMsg = data.data.message + '...Redirecting'; // If successful, grab message from JSON object and redirect to login page
+                    app.successMsg = data.data.message + 'Success!...Redirecting'; // If successful, grab message from JSON object and redirect to login page
+                    $state.go('app.login')
                 } else {
-                    app.errorMsg = data.data.message + '...Redirecting'; // If not successful, grab message from JSON object and redirect to login page
+                    app.errorMsg = data.data.message + 'Failed!...Redirecting'; // If not successful, grab message from JSON object and redirect to login page
+                    // $state.go('app.login')
                 }
             });
         }

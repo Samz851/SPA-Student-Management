@@ -43,15 +43,16 @@
         })
     },
 
-    resendPassword: function(email, firstname, token){
+    resendPassword: function(email, name, token){
         var url= domain+"resetpassword/"+token;
         mailOptions={
             to: email,
             subject: "Reset Your Password at STDNT APP",
-            html: "Hello "+firstname+" You have requested to reset your password, please follow the link below\n"+url
+            html: "Hello "+name+" You have requested to reset your password, please follow the link below\n"+url
         }
         mailTransporter.sendMail(mailOptions, function(err, res){
-            if(err) throw err
+            if(err) throw err;
+            res.json({success: true, message: "Password Link Sent"})
         })
     }
 
